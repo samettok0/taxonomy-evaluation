@@ -13,7 +13,8 @@ const STATE = {
   responses: {},        // { globalIndex: { response: string, timestamp: string } }
   completed: new Set(),
   filteredIndices: null, // null = show all
-  filterCategory: '',
+  listFilters: { search: '', status: 'all', decision: 'all', page: 1, limit: 100, tree: { high: null, middle: null, low: null } },
+  currentView: 'list',
 };
 
 const STORAGE_KEY = 'ai4rse-prompt-browser';
@@ -119,111 +120,230 @@ function initUI() {
   $('#nav-total-display').textContent = STATE.prompts.length.toLocaleString();
   $('#nav-input').max = STATE.prompts.length;
 
-  // Build category sidebar
-  buildCategorySidebar();
-
-  // Build category filter dropdown
-  buildCategoryDropdown();
+  // Render Tree
+  renderTree();
 
   // Render current prompt
   renderPrompt(STATE.currentIndex);
+
+  // Render list view
+  renderListView();
+
+  // Show default view
+  toggleView('list');
 
   // Update stats
   updateStats();
 }
 
-// ─── Build Sidebar ──────────────────────────────────────────
-function buildCategorySidebar() {
-  const container = $('#category-list');
-  container.innerHTML = '';
-
-  // Group categories by high-level
-  const groups = {};
-  STATE.categoryIndex.forEach((cat, i) => {
-    const parts = cat.path.split(' → ');
-    const highLevel = parts[0] || 'Other';
-    if (!groups[highLevel]) groups[highLevel] = [];
-    groups[highLevel].push({ ...cat, _idx: i, parts });
-  });
-
-  for (const [groupName, cats] of Object.entries(groups)) {
-    const group = document.createElement('div');
-    group.className = 'cat-group';
-    group.dataset.group = groupName;
-
-    // Count done for this group
-    const totalInGroup = cats.reduce((s, c) => s + c.count, 0);
-    const doneInGroup = cats.reduce((s, c) => {
-      let done = 0;
-      for (let i = c.start_index; i <= c.end_index; i++) {
-        if (STATE.completed.has(i)) done++;
-      }
-      return s + done;
-    }, 0);
-    const pct = totalInGroup > 0 ? (doneInGroup / totalInGroup) * 100 : 0;
-
-    group.innerHTML = `
-      <button class="cat-group-header" data-group="${groupName}">
-        <svg class="arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="9 18 15 12 9 6"/>
-        </svg>
-        <span class="cat-group-name">${groupName}</span>
-        <span class="cat-count">${totalInGroup}</span>
-        <div class="cat-progress-mini">
-          <div class="cat-progress-mini-fill" style="width: ${pct}%"></div>
-        </div>
-      </button>
-      <div class="cat-group-items"></div>
-    `;
-
-    const itemsContainer = group.querySelector('.cat-group-items');
-
-    cats.forEach(cat => {
-      const label = cat.parts.slice(1).join(' → ') || cat.path;
-      let catDone = 0;
-      for (let i = cat.start_index; i <= cat.end_index; i++) {
-        if (STATE.completed.has(i)) catDone++;
-      }
-      const dotClass = catDone === cat.count ? 'done' : catDone > 0 ? 'partial' : '';
-
-      const item = document.createElement('button');
-      item.className = 'cat-item';
-      item.dataset.startIndex = cat.start_index;
-      item.dataset.path = cat.path;
-      item.innerHTML = `
-        <span class="cat-item-dot ${dotClass}"></span>
-        <span class="cat-item-label">${label}</span>
-        <span class="cat-item-count">${catDone}/${cat.count}</span>
-      `;
-      item.addEventListener('click', () => {
-        jumpToPrompt(cat.start_index);
-        // Highlight active
-        $$('.cat-item').forEach(el => el.classList.remove('active'));
-        item.classList.add('active');
-      });
-      itemsContainer.appendChild(item);
-    });
-
-    // Toggle group
-    group.querySelector('.cat-group-header').addEventListener('click', () => {
-      group.classList.toggle('open');
-    });
-
-    container.appendChild(group);
+// ─── View Toggling ──────────────────────────────────────────
+function toggleView(viewName) {
+  STATE.currentView = viewName;
+  if (viewName === 'list') {
+    $('#view-list').classList.remove('hidden');
+    $('#view-prompt').classList.add('hidden');
+    $('#btn-back-to-list').classList.add('hidden');
+    renderListView(); // refresh list when returning
+  } else {
+    $('#view-list').classList.add('hidden');
+    $('#view-prompt').classList.remove('hidden');
+    $('#btn-back-to-list').classList.remove('hidden');
   }
 }
 
-// ─── Build Category Dropdown ────────────────────────────────
-function buildCategoryDropdown() {
-  const select = $('#category-filter-select');
-  // Add high-level categories
-  const highLevels = [...new Set(STATE.categoryIndex.map(c => c.path.split(' → ')[0]))];
-  highLevels.forEach(hl => {
-    const opt = document.createElement('option');
-    opt.value = hl;
-    opt.textContent = hl;
-    select.appendChild(opt);
+// ─── List View Rendering ────────────────────────────────────
+function renderListView() {
+  const tbody = $('#list-table-body');
+  const filters = STATE.listFilters;
+  
+  // 1. Filter
+  const q = filters.search.toLowerCase();
+  let filtered = [];
+  
+  for (let i = 0; i < STATE.prompts.length; i++) {
+    const p = STATE.prompts[i];
+    const r = STATE.responses[i];
+    const isDone = STATE.completed.has(i);
+    
+    // Status filter
+    if (filters.status === 'done' && !isDone) continue;
+    if (filters.status === 'pending' && isDone) continue;
+    
+    // Decision filter
+    const currentDec = r ? r.decision : '';
+    if (filters.decision !== 'all') {
+      if (filters.decision === 'none' && currentDec) continue;
+      if (filters.decision !== 'none' && currentDec !== filters.decision) continue;
+    }
+    
+    // Search filter
+    if (q) {
+      if (!p.concept_name.toLowerCase().includes(q) && 
+          !p.category_path.toLowerCase().includes(q)) {
+        continue;
+      }
+    } else {
+      // Tree filter (only apply if not searching)
+      if (filters.tree.high && p.high_level !== filters.tree.high) continue;
+      if (filters.tree.middle && p.middle_level !== filters.tree.middle) continue;
+      if (filters.tree.low && p.low_level !== filters.tree.low) continue;
+    }
+    
+    filtered.push(i);
+  }
+  
+  STATE.filteredIndices = filtered;
+  
+  // 2. Pagination
+  const totalItems = filtered.length;
+  const totalPages = Math.ceil(totalItems / filters.limit) || 1;
+  
+  if (filters.page > totalPages) filters.page = totalPages;
+  if (filters.page < 1) filters.page = 1;
+  
+  const startIdx = (filters.page - 1) * filters.limit;
+  const endIdx = Math.min(startIdx + filters.limit, totalItems);
+  
+  const pageItems = filtered.slice(startIdx, endIdx);
+  
+  // 3. Render Table
+  tbody.innerHTML = '';
+  
+  pageItems.forEach(i => {
+    const p = STATE.prompts[i];
+    const r = STATE.responses[i];
+    const isDone = STATE.completed.has(i);
+    
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>#${i + 1}</td>
+      <td style="font-weight: 500;">${p.concept_name}</td>
+      <td style="color: var(--text-tertiary); font-size: 0.75rem;">${p.category_path}</td>
+      <td>
+        <div class="status-cell">
+          <span class="status-dot ${isDone ? 'done' : ''}"></span>
+          ${isDone ? 'Done' : 'Pending'}
+        </div>
+      </td>
+      <td>
+        <span class="badge" style="background: var(--bg-secondary);">${r ? r.decision || '-' : '-'}</span>
+      </td>
+    `;
+    
+    tr.addEventListener('click', () => {
+      jumpToPrompt(i);
+      toggleView('prompt');
+    });
+    
+    tbody.appendChild(tr);
   });
+  
+  if (pageItems.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 40px; color: var(--text-tertiary);">No concepts found matching your filters.</td></tr>`;
+  }
+  
+  // 4. Update Pagination UI
+  $('#page-info').textContent = `Showing ${startIdx + 1}-${endIdx} of ${totalItems} (Page ${filters.page} of ${totalPages})`;
+  $('#btn-page-prev').disabled = filters.page === 1;
+  $('#btn-page-next').disabled = filters.page === totalPages;
+}
+
+// ─── Tree Navigation ────────────────────────────────────────
+function renderTree() {
+  const highList = $('#tree-high-list');
+  const midList = $('#tree-mid-list');
+  const lowList = $('#tree-low-list');
+  
+  const selectedHigh = STATE.listFilters.tree.high;
+  const selectedMid = STATE.listFilters.tree.middle;
+  const selectedLow = STATE.listFilters.tree.low;
+
+  // 1. Render High Level
+  const highLevels = [...new Set(STATE.categoryIndex.map(c => c.path.split(' → ')[0] || 'Other'))].sort();
+  highList.innerHTML = '';
+  
+  highLevels.forEach(hl => {
+    const item = document.createElement('div');
+    item.className = 'tree-item' + (selectedHigh === hl ? ' active' : '');
+    item.textContent = hl;
+    item.addEventListener('click', () => {
+      STATE.listFilters.tree.high = selectedHigh === hl ? null : hl;
+      STATE.listFilters.tree.middle = null;
+      STATE.listFilters.tree.low = null;
+      STATE.listFilters.page = 1;
+      
+      // Clear search if using tree
+      if (STATE.listFilters.tree.high) {
+        STATE.listFilters.search = '';
+        $('#search-input').value = '';
+        $('#search-clear').classList.add('hidden');
+      }
+      
+      renderTree();
+      renderListView();
+    });
+    highList.appendChild(item);
+  });
+
+  // 2. Render Middle Level
+  if (!selectedHigh) {
+    midList.innerHTML = '<div class="tree-empty">Select High Level first</div>';
+    lowList.innerHTML = '<div class="tree-empty">Select Middle Level first</div>';
+    return;
+  }
+  
+  const midLevels = [...new Set(STATE.categoryIndex
+    .filter(c => (c.path.split(' → ')[0] || 'Other') === selectedHigh)
+    .map(c => c.path.split(' → ')[1])
+    .filter(Boolean))].sort();
+    
+  midList.innerHTML = '';
+  if (midLevels.length === 0) {
+    midList.innerHTML = '<div class="tree-empty">No middle levels</div>';
+  } else {
+    midLevels.forEach(ml => {
+      const item = document.createElement('div');
+      item.className = 'tree-item' + (selectedMid === ml ? ' active' : '');
+      item.textContent = ml;
+      item.addEventListener('click', () => {
+        STATE.listFilters.tree.middle = selectedMid === ml ? null : ml;
+        STATE.listFilters.tree.low = null;
+        STATE.listFilters.page = 1;
+        renderTree();
+        renderListView();
+      });
+      midList.appendChild(item);
+    });
+  }
+
+  // 3. Render Low Level
+  if (!selectedMid) {
+    lowList.innerHTML = '<div class="tree-empty">Select Middle Level first</div>';
+    return;
+  }
+
+  const lowLevels = [...new Set(STATE.categoryIndex
+    .filter(c => (c.path.split(' → ')[0] || 'Other') === selectedHigh && c.path.split(' → ')[1] === selectedMid)
+    .map(c => c.path.split(' → ')[2])
+    .filter(Boolean))].sort();
+    
+  lowList.innerHTML = '';
+  if (lowLevels.length === 0) {
+    lowList.innerHTML = '<div class="tree-empty">No low levels</div>';
+  } else {
+    lowLevels.forEach(ll => {
+      const item = document.createElement('div');
+      item.className = 'tree-item' + (selectedLow === ll ? ' active' : '');
+      item.textContent = ll;
+      item.addEventListener('click', () => {
+        STATE.listFilters.tree.low = selectedLow === ll ? null : ll;
+        STATE.listFilters.page = 1;
+        renderTree();
+        renderListView();
+      });
+      lowList.appendChild(item);
+    });
+  }
 }
 
 // ─── Render Prompt ──────────────────────────────────────────
@@ -390,18 +510,7 @@ function skipToNextPending() {
 }
 
 function getEffectiveList() {
-  if (STATE.filteredIndices) return STATE.filteredIndices;
-  if (STATE.filterCategory) {
-    const indices = [];
-    STATE.categoryIndex.forEach(cat => {
-      if (cat.path.startsWith(STATE.filterCategory)) {
-        for (let i = cat.start_index; i <= cat.end_index; i++) {
-          indices.push(i);
-        }
-      }
-    });
-    return indices.length > 0 ? indices : null;
-  }
+  if (STATE.filteredIndices && STATE.filteredIndices.length > 0) return STATE.filteredIndices;
   return null;
 }
 
@@ -504,67 +613,6 @@ function updateStats() {
   const offset = circumference - (pct / 100) * circumference;
   $('#progress-ring-fill').style.strokeDashoffset = offset;
   $('#progress-ring-text').textContent = `${Math.round(pct)}%`;
-
-  // Update sidebar counts (lightweight)
-  updateSidebarProgress();
-}
-
-function updateSidebarProgress() {
-  const catItems = $$('.cat-item');
-  catItems.forEach(item => {
-    const startIndex = parseInt(item.dataset.startIndex);
-    const cat = STATE.categoryIndex.find(c => c.start_index === startIndex);
-    if (!cat) return;
-
-    let done = 0;
-    for (let i = cat.start_index; i <= cat.end_index; i++) {
-      if (STATE.completed.has(i)) done++;
-    }
-
-    const countEl = item.querySelector('.cat-item-count');
-    countEl.textContent = `${done}/${cat.count}`;
-
-    const dot = item.querySelector('.cat-item-dot');
-    dot.className = 'cat-item-dot';
-    if (done === cat.count) dot.classList.add('done');
-    else if (done > 0) dot.classList.add('partial');
-  });
-}
-
-function applySidebarFilter(filter) {
-  // Filter individual category items
-  $$('.cat-item').forEach(item => {
-    const startIndex = parseInt(item.dataset.startIndex);
-    const cat = STATE.categoryIndex.find(c => c.start_index === startIndex);
-    if (!cat) return;
-
-    let done = 0;
-    for (let i = cat.start_index; i <= cat.end_index; i++) {
-      if (STATE.completed.has(i)) done++;
-    }
-
-    if (filter === 'all') {
-      item.style.display = '';
-    } else if (filter === 'done') {
-      item.style.display = done > 0 ? '' : 'none';
-    } else if (filter === 'pending') {
-      item.style.display = done < cat.count ? '' : 'none';
-    }
-  });
-
-  // Hide parent groups that have no visible children
-  $$('.cat-group').forEach(group => {
-    const visibleItems = group.querySelectorAll('.cat-item:not([style*="display: none"])');
-    if (filter === 'all') {
-      group.style.display = '';
-    } else {
-      group.style.display = visibleItems.length > 0 ? '' : 'none';
-      // Auto-open groups that have visible items when filtering
-      if (visibleItems.length > 0 && filter !== 'all') {
-        group.classList.add('open');
-      }
-    }
-  });
 }
 
 // ─── Persistence (Local File via Server API) ───────────────
@@ -872,33 +920,57 @@ function bindEvents() {
     }
   });
 
-  // Category search
-  $('#category-search').addEventListener('input', (e) => {
-    const query = e.target.value.toLowerCase();
-    $$('.cat-group').forEach(group => {
-      let hasMatch = false;
-      group.querySelectorAll('.cat-item').forEach(item => {
-        const label = item.querySelector('.cat-item-label').textContent.toLowerCase();
-        const match = label.includes(query);
-        item.style.display = match ? '' : 'none';
-        if (match) hasMatch = true;
-      });
-      // Also check group name
-      const groupName = group.dataset.group.toLowerCase();
-      if (groupName.includes(query)) hasMatch = true;
-      group.style.display = hasMatch ? '' : 'none';
-      if (query && hasMatch) group.classList.add('open');
-    });
+  // List View Events
+  $('#btn-back-to-list').addEventListener('click', () => toggleView('list'));
+
+  const searchInput = $('#search-input');
+  const searchClear = $('#search-clear');
+  
+  searchInput.addEventListener('input', (e) => {
+    const val = e.target.value;
+    STATE.listFilters.search = val;
+    STATE.listFilters.page = 1;
+    
+    if (val) {
+      searchClear.classList.remove('hidden');
+      // Clear tree selection visually and logically when searching globally
+      STATE.listFilters.tree = { high: null, middle: null, low: null };
+      renderTree();
+    } else {
+      searchClear.classList.add('hidden');
+    }
+    
+    renderListView();
+  });
+  
+  searchClear.addEventListener('click', () => {
+    searchInput.value = '';
+    STATE.listFilters.search = '';
+    STATE.listFilters.page = 1;
+    searchClear.classList.add('hidden');
+    renderListView();
   });
 
-  // Sidebar tabs
-  $$('.sidebar-tabs .tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      $$('.sidebar-tabs .tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      const filter = tab.dataset.filter;
-      applySidebarFilter(filter);
-    });
+  $('#list-filter-status').addEventListener('change', (e) => {
+    STATE.listFilters.status = e.target.value;
+    STATE.listFilters.page = 1;
+    renderListView();
+  });
+
+  $('#list-filter-decision').addEventListener('change', (e) => {
+    STATE.listFilters.decision = e.target.value;
+    STATE.listFilters.page = 1;
+    renderListView();
+  });
+
+  $('#btn-page-prev').addEventListener('click', () => {
+    STATE.listFilters.page--;
+    renderListView();
+  });
+
+  $('#btn-page-next').addEventListener('click', () => {
+    STATE.listFilters.page++;
+    renderListView();
   });
 
   // Auto-save on textarea change and auto-parse JSON for Decision panel

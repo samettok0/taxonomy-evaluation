@@ -33,15 +33,14 @@
   <!-- Main App -->
   <div id="app" class="app hidden">
     <!-- Header -->
-    <header id="main-header" class="header">
+    <header class="header">
       <div class="header-left">
-        <div class="logo">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-            <path d="M2 17l10 5 10-5"/>
-            <path d="M2 12l10 5 10-5"/>
+        <button id="btn-back-to-list" class="btn btn-secondary hidden" style="margin-right: 15px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"/>
           </svg>
-        </div>
+          Back to List
+        </button>
         <div class="header-title">
           <h1>AI4RSE Prompt Browser</h1>
           <span class="header-badge" id="total-badge">0 prompts</span>
@@ -92,26 +91,94 @@
 
     <!-- Main Layout -->
     <div class="main-layout">
-      <!-- Sidebar -->
-      <aside id="sidebar" class="sidebar">
-        <div class="sidebar-header">
-          <h2>Categories</h2>
-          <div class="sidebar-filter">
-            <input type="text" id="category-search" placeholder="Search categories..." class="input-search" />
+      
+      <!-- ================= LIST VIEW ================= -->
+      <div id="view-list" class="view-container">
+        <div class="list-filters">
+          <div class="filter-group filter-search-group">
+            <div class="search-box" id="search-box">
+              <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input type="text" id="search-input" class="search-input" placeholder="Global search... (/ to focus)" autocomplete="off" />
+              <button class="search-clear hidden" id="search-clear" title="Clear search">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+              <div class="search-dropdown hidden" id="search-dropdown">
+                <div class="search-results" id="search-results"></div>
+                <div class="search-footer" id="search-footer"></div>
+              </div>
+            </div>
+          </div>
+          <div class="filter-group">
+            <label>Status:</label>
+            <select id="list-filter-status" class="decision-select">
+              <option value="all">All</option>
+              <option value="pending">Pending</option>
+              <option value="done">Done</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Decision:</label>
+            <select id="list-filter-decision" class="decision-select">
+              <option value="all">All</option>
+              <option value="none">No Decision</option>
+              <option value="Keep">Keep</option>
+              <option value="Move">Move</option>
+              <option value="Merge">Merge</option>
+              <option value="Remove">Remove</option>
+              <option value="Discuss">Discuss</option>
+            </select>
           </div>
         </div>
-        <div class="sidebar-tabs">
-          <button class="tab active" data-filter="all" id="tab-all">All</button>
-          <button class="tab" data-filter="pending" id="tab-pending">Pending</button>
-          <button class="tab" data-filter="done" id="tab-done">Done</button>
+        
+        <div class="tree-nav-container">
+          <div class="tree-level" id="tree-high-container">
+            <div class="tree-header">High Level</div>
+            <div class="tree-list" id="tree-high-list"></div>
+          </div>
+          <div class="tree-level" id="tree-mid-container">
+            <div class="tree-header">Middle Level</div>
+            <div class="tree-list" id="tree-mid-list">
+              <div class="tree-empty">Select High Level first</div>
+            </div>
+          </div>
+          <div class="tree-level" id="tree-low-container">
+            <div class="tree-header">Low Level</div>
+            <div class="tree-list" id="tree-low-list">
+              <div class="tree-empty">Select Middle Level first</div>
+            </div>
+          </div>
         </div>
-        <nav id="category-list" class="category-list">
-          <!-- Categories populated by JS -->
-        </nav>
-      </aside>
+        
+        <div class="table-container">
+          <table class="data-table" id="list-table">
+            <thead>
+              <tr>
+                <th width="80">Index</th>
+                <th>Concept Name</th>
+                <th>Category Path</th>
+                <th width="100">Status</th>
+                <th width="120">Decision</th>
+              </tr>
+            </thead>
+            <tbody id="list-table-body">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="list-pagination">
+          <button id="btn-page-prev" class="btn btn-secondary" disabled>← Previous</button>
+          <span id="page-info">Page 1 of ?</span>
+          <button id="btn-page-next" class="btn btn-secondary">Next →</button>
+        </div>
+      </div>
 
-      <!-- Content -->
-      <main class="content">
+      <!-- ================= PROMPT VIEW ================= -->
+      <div id="view-prompt" class="view-container hidden">
         <!-- Navigation Bar -->
         <div class="nav-bar">
           <div class="nav-controls">
@@ -131,23 +198,6 @@
             </button>
           </div>
           <div class="nav-actions">
-            <!-- Search Box -->
-            <div class="search-box" id="search-box">
-              <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-              </svg>
-              <input type="text" id="search-input" class="search-input" placeholder="Search concept or category… (/ to focus)" autocomplete="off" />
-              <button class="search-clear hidden" id="search-clear" title="Clear search">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
-              </button>
-              <!-- Dropdown results -->
-              <div class="search-dropdown hidden" id="search-dropdown">
-                <div class="search-results" id="search-results"></div>
-                <div class="search-footer" id="search-footer"></div>
-              </div>
-            </div>
 
             <button class="btn btn-secondary" id="btn-skip-to-next-pending" title="Skip to next pending">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -298,7 +348,7 @@
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </div>
 
     <!-- Toast -->

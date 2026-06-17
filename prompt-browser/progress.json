@@ -1,32 +1,20 @@
 {
-  "currentIndex": 2,
+  "currentIndex": 243,
   "responses": {
-    "0": {
-      "response": "{ \"alignment\": \"Incorrect\", \"suggested path\": \"Artificial Intelligence > Machine Learning > Deep Learning\", \"confidence\": 5, \"reasoning\": \"This is definitely a deep learning concept.\" }",
+    "8893": {
+      "response": "{\n  \"alignment\": \"Incorrect\",\n  \"suggested path\": \"Computers and information processing > Distributed computing > Cluster computing\",\n  \"confidence\": 5,\n  \"reasoning\": \"The current path uses categories absent from the official IEEE taxonomy, whereas Apache Spark workloads are explicitly mapped to distributed and cluster computing frameworks.\"\n}",
       "decision": "Move",
-      "reason": "This is definitely a deep learning concept.",
+      "reason": "The current path uses categories absent from the official IEEE taxonomy, whereas Apache Spark workloads are explicitly mapped to distributed and cluster computing frameworks.",
       "issues": "",
-      "newPath": "Artificial Intelligence > Machine Learning > Deep Learning",
-      "timestamp": "2026-06-17T10:04:28.369Z",
-      "concept_name": "active goal model",
-      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Agent Systems",
-      "original_row": 1
-    },
-    "1": {
-      "response": "{ \"alignment\": \"Incorrect\", \"suggested path\": \"Artificial Intelligence > Machine Learning > Deep Learning\", \"confidence\": 5, \"reasoning\": \"This is definitely a deep learning concept.\" }",
-      "decision": "Move",
-      "reason": "This is definitely a deep learning concept.",
-      "issues": "Overly Generic Concept",
-      "newPath": "Artificial Intelligence > Machine Learning > Deep Learning",
-      "timestamp": "2026-06-17T10:04:40.315Z",
-      "concept_name": "agent architecture",
-      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Agent Systems",
-      "original_row": 2
+      "newPath": "Computers and information processing > Distributed computing > Cluster computing",
+      "timestamp": "2026-06-17T14:46:04.715Z",
+      "concept_name": "spark workloads",
+      "category_path": "Software Engineering \u2192 Infrastructure and Deployment \u2192 Data Operations Pipelines",
+      "original_row": 8894
     }
   },
   "completed": [
-    0,
-    1
+    8893
   ],
-  "lastSaved": "2026-06-17T13:08:36.221Z"
+  "lastSaved": "2026-06-17T14:47:25.486Z"
 }
