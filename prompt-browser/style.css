@@ -824,6 +824,175 @@ body {
   box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
+/* ========== Decision Panel ========== */
+.decision-section {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-secondary);
+  background: linear-gradient(135deg, rgba(99, 128, 255, 0.03), rgba(167, 139, 250, 0.03));
+}
+
+.decision-header {
+  margin-bottom: 14px;
+}
+
+.decision-header h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+}
+
+.decision-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.decision-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.decision-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.decision-field-grow {
+  flex: 1;
+}
+
+.decision-field label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+}
+
+.label-hint {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--text-tertiary);
+  opacity: 0.7;
+}
+
+.decision-select {
+  padding: 9px 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  outline: none;
+  cursor: pointer;
+  min-width: 160px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.decision-select:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+/* Decision-specific colors on the select */
+.decision-select[data-decision="Keep"] { border-color: var(--success); }
+.decision-select[data-decision="Move"] { border-color: var(--accent); }
+.decision-select[data-decision="Merge"] { border-color: var(--purple); }
+.decision-select[data-decision="Remove"] { border-color: var(--danger); }
+.decision-select[data-decision="Discuss"] { border-color: var(--warning); }
+
+.decision-input {
+  padding: 9px 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-family: var(--font-sans);
+  outline: none;
+  width: 100%;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.decision-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.decision-input:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.decision-autofill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: var(--accent-soft);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-sm);
+}
+
+.autofill-label {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.btn-autofill {
+  padding: 5px 12px;
+  background: var(--accent);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: all 0.15s;
+}
+
+.btn-autofill:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+/* Export CSV button in header */
+.btn-export-csv {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--success-soft);
+  color: var(--success);
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  border: 1px solid var(--success-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s var(--ease-out);
+}
+
+.btn-export-csv:hover {
+  background: rgba(52, 211, 153, 0.18);
+  transform: translateY(-1px);
+}
+
+.btn-export-csv:active {
+  transform: scale(0.97);
+}
+
 /* Card Actions */
 .card-actions {
   padding: 20px 24px;

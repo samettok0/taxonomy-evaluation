@@ -271,6 +271,38 @@ function renderPrompt(index) {
   const saved = STATE.responses[index];
   $('#response-textarea').value = saved ? saved.response : '';
 
+  // Decision Panel
+  const decisionSelect = $('#decision-select');
+  const decisionReason = $('#decision-reason');
+  const decisionIssues = $('#decision-issues');
+  const decisionNewPathRow = $('#decision-newpath-row');
+  const decisionNewPath = $('#decision-newpath');
+  const decisionAutofill = $('#decision-autofill');
+  
+  if (saved && saved.decision) {
+    decisionSelect.value = saved.decision;
+    decisionSelect.dataset.decision = saved.decision;
+    decisionReason.value = saved.reason || '';
+    decisionIssues.value = saved.issues || '';
+    if (saved.decision === 'Move') {
+      decisionNewPathRow.classList.remove('hidden');
+      decisionNewPath.value = saved.newPath || '';
+    } else {
+      decisionNewPathRow.classList.add('hidden');
+      decisionNewPath.value = '';
+    }
+  } else {
+    decisionSelect.value = '';
+    decisionSelect.dataset.decision = '';
+    decisionReason.value = '';
+    decisionIssues.value = '';
+    decisionNewPathRow.classList.add('hidden');
+    decisionNewPath.value = '';
+  }
+  
+  // Hide autofill banner by default
+  decisionAutofill.classList.add('hidden');
+
   // Reset copy button
   const copyBtn = $('#btn-copy');
   copyBtn.classList.remove('copied');
@@ -414,9 +446,17 @@ async function pasteResponse() {
 function saveResponse() {
   const index = STATE.currentIndex;
   const response = $('#response-textarea').value.trim();
+  const decision = $('#decision-select').value;
+  const reason = $('#decision-reason').value.trim();
+  const issues = $('#decision-issues').value.trim();
+  const newPath = $('#decision-newpath').value.trim();
 
   STATE.responses[index] = {
     response: response,
+    decision: decision,
+    reason: reason,
+    issues: issues,
+    newPath: decision === 'Move' ? newPath : '',
     timestamp: new Date().toISOString(),
     concept_name: STATE.prompts[index].concept_name,
     category_path: STATE.prompts[index].category_path,
@@ -621,6 +661,59 @@ function exportResponses() {
   showToast('Responses exported ✓', 'success');
 }
 
+async function exportDecisionsCSV() {
+  showToast('Generating CSV export...', 'info');
+  try {
+    const headers = [
+      "High level", "Middle level", "Low level", 
+      "Concept Name", "Concept Definition", 
+      "Decision", "Reason", "Issues", "New Taxonomy Path"
+    ];
+    
+    // Helper to escape CSV fields
+    const escapeCSV = (str) => {
+      if (str === null || str === undefined) return '""';
+      const s = String(str).replace(/"/g, '""');
+      return `"${s}"`;
+    };
+
+    let csvContent = headers.map(escapeCSV).join(',') + '\n';
+    
+    // Output in original order
+    for (let i = 0; i < STATE.prompts.length; i++) {
+      const p = STATE.prompts[i];
+      if (STATE.responses[i]) {
+        const r = STATE.responses[i];
+        const row = [
+          p.high_level || '',
+          p.middle_level || '',
+          p.low_level || '',
+          p.concept_name || '',
+          p.concept_definition || '',
+          r.decision || '',
+          r.reason || '',
+          r.issues || '',
+          r.newPath || ''
+        ];
+        csvContent += row.map(escapeCSV).join(',') + '\n';
+      }
+    }
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'AI4RSE_Taxonomy_Decisions.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    showToast('Decisions exported to CSV ✓', 'success');
+  } catch (err) {
+    console.error(err);
+    showToast('Error generating CSV export', 'error');
+  }
+}
+
 function importResponses(file) {
   const reader = new FileReader();
   reader.onload = (e) => {
@@ -724,6 +817,7 @@ function bindEvents() {
 
   // Export
   $('#btn-export').addEventListener('click', exportResponses);
+  $('#btn-export-csv').addEventListener('click', exportDecisionsCSV);
   $('#btn-export-responses').addEventListener('click', exportResponses);
 
   // Import
@@ -807,24 +901,34 @@ function bindEvents() {
     });
   });
 
-  // Auto-save on textarea change
+  // Auto-save on textarea change and auto-parse JSON for Decision panel
   let autoSaveTimeout;
   $('#response-textarea').addEventListener('input', () => {
     clearTimeout(autoSaveTimeout);
+    
+    // Try to auto-parse AI JSON and show autofill banner
+    tryAutoParseJSON();
+    
     autoSaveTimeout = setTimeout(() => {
       const response = $('#response-textarea').value.trim();
       if (response) {
-        STATE.responses[STATE.currentIndex] = {
-          response: response,
-          timestamp: new Date().toISOString(),
-          concept_name: STATE.prompts[STATE.currentIndex].concept_name,
-          category_path: STATE.prompts[STATE.currentIndex].category_path,
-          original_row: STATE.prompts[STATE.currentIndex].original_row,
-        };
-        saveState();
+        saveResponse(); // Uses the unified save function
       }
     }, 1000);
   });
+  
+  // Decision Panel Events
+  $('#decision-select').addEventListener('change', (e) => {
+    const val = e.target.value;
+    e.target.dataset.decision = val;
+    if (val === 'Move') {
+      $('#decision-newpath-row').classList.remove('hidden');
+    } else {
+      $('#decision-newpath-row').classList.add('hidden');
+    }
+  });
+
+  $('#btn-autofill').addEventListener('click', applyAutofill);
 
   // Search
   bindSearchEvents();
@@ -1005,3 +1109,65 @@ function bindSearchEvents() {
   });
 }
 
+// ─── Auto-parse JSON ────────────────────────────────────────
+let autoParsedDecision = null;
+
+function tryAutoParseJSON() {
+  const text = $('#response-textarea').value.trim();
+  if (!text.startsWith('{') || !text.endsWith('}')) {
+    $('#decision-autofill').classList.add('hidden');
+    autoParsedDecision = null;
+    return;
+  }
+
+  try {
+    const data = JSON.parse(text);
+    if (!data.alignment) return;
+
+    const alignment = data.alignment.toLowerCase();
+    let decision = '';
+    if (alignment.includes('partially')) decision = 'Discuss';
+    else if (alignment.includes('incorrect')) decision = 'Move';
+    else if (alignment.includes('correct')) decision = 'Keep';
+
+    if (decision) {
+      autoParsedDecision = {
+        decision: decision,
+        reason: data.reasoning || '',
+        newPath: decision === 'Move' ? (data['suggested path'] || '') : ''
+      };
+
+      $('#decision-autofill').classList.remove('hidden');
+    } else {
+      $('#decision-autofill').classList.add('hidden');
+      autoParsedDecision = null;
+    }
+  } catch (err) {
+    // Not valid JSON yet
+    $('#decision-autofill').classList.add('hidden');
+    autoParsedDecision = null;
+  }
+}
+
+function applyAutofill() {
+  if (!autoParsedDecision) return;
+
+  const { decision, reason, newPath } = autoParsedDecision;
+
+  $('#decision-select').value = decision;
+  $('#decision-select').dataset.decision = decision;
+  $('#decision-reason').value = reason;
+  $('#decision-issues').value = autoParsedDecision.issues || '';
+
+  if (decision === 'Move') {
+    $('#decision-newpath-row').classList.remove('hidden');
+    $('#decision-newpath').value = newPath !== 'N/A' ? newPath : '';
+  } else {
+    $('#decision-newpath-row').classList.add('hidden');
+    $('#decision-newpath').value = '';
+  }
+
+  $('#decision-autofill').classList.add('hidden');
+  saveResponse(); // trigger auto-save after autofill
+  showToast('Applied AI suggestion', 'info');
+}

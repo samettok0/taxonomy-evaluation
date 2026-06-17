@@ -12,6 +12,8 @@ import http.server
 import json
 import os
 import shutil
+import csv
+import io
 from datetime import datetime
 from urllib.parse import urlparse
 
@@ -42,6 +44,8 @@ class PromptBrowserHandler(http.server.SimpleHTTPRequestHandler):
 
         if parsed.path == "/api/save":
             self._handle_save()
+        elif parsed.path == "/api/export-csv":
+            self._handle_export_csv()
         else:
             self.send_error(404, "Not Found")
 
@@ -80,6 +84,59 @@ class PromptBrowserHandler(http.server.SimpleHTTPRequestHandler):
                 "timestamp": datetime.now().isoformat(),
                 "file": PROGRESS_FILE
             }))
+        except json.JSONDecodeError:
+            self._send_json(400, json.dumps({"error": "Invalid JSON"}))
+        except Exception as e:
+            self._send_json(500, json.dumps({"error": str(e)}))
+
+    def _handle_export_csv(self):
+        """Generate and send CSV of decisions."""
+        try:
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length).decode("utf-8")
+            data = json.loads(body)
+            
+            prompts = data.get("prompts", [])
+            responses = data.get("responses", {})
+            
+            output = io.StringIO()
+            writer = csv.writer(output)
+            
+            # Write header
+            writer.writerow([
+                "High level", "Middle level", "Low level", 
+                "Concept Name", "Concept Definition", 
+                "Decision", "Reason", "New Taxonomy Path"
+            ])
+            
+            # Output in original order
+            for i, p in enumerate(prompts):
+                idx_str = str(i)
+                if idx_str in responses:
+                    r = responses[idx_str]
+                    decision = r.get("decision", "")
+                    reason = r.get("reason", "")
+                    new_path = r.get("newPath", "")
+                    writer.writerow([
+                        p.get("high_level", ""),
+                        p.get("middle_level", ""),
+                        p.get("low_level", ""),
+                        p.get("concept_name", ""),
+                        p.get("concept_definition", ""),
+                        decision,
+                        reason,
+                        new_path
+                    ])
+            
+            csv_data = output.getvalue()
+            
+            self.send_response(200)
+            self.send_header("Content-Type", "text/csv")
+            self.send_header("Content-Disposition", 'attachment; filename="AI4RSE_Taxonomy_Decisions.csv"')
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            self.wfile.write(csv_data.encode("utf-8"))
+            
         except json.JSONDecodeError:
             self._send_json(400, json.dumps({"error": "Invalid JSON"}))
         except Exception as e:

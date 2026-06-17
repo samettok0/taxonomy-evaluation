@@ -1,6 +1,32 @@
 {
-  "currentIndex": 4520,
-  "responses": {},
-  "completed": [],
-  "lastSaved": "2026-06-17T09:32:59.815Z"
+  "currentIndex": 2,
+  "responses": {
+    "0": {
+      "response": "{ \"alignment\": \"Incorrect\", \"suggested path\": \"Artificial Intelligence > Machine Learning > Deep Learning\", \"confidence\": 5, \"reasoning\": \"This is definitely a deep learning concept.\" }",
+      "decision": "Move",
+      "reason": "This is definitely a deep learning concept.",
+      "issues": "",
+      "newPath": "Artificial Intelligence > Machine Learning > Deep Learning",
+      "timestamp": "2026-06-17T10:04:28.369Z",
+      "concept_name": "active goal model",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Agent Systems",
+      "original_row": 1
+    },
+    "1": {
+      "response": "{ \"alignment\": \"Incorrect\", \"suggested path\": \"Artificial Intelligence > Machine Learning > Deep Learning\", \"confidence\": 5, \"reasoning\": \"This is definitely a deep learning concept.\" }",
+      "decision": "Move",
+      "reason": "This is definitely a deep learning concept.",
+      "issues": "Overly Generic Concept",
+      "newPath": "Artificial Intelligence > Machine Learning > Deep Learning",
+      "timestamp": "2026-06-17T10:04:40.315Z",
+      "concept_name": "agent architecture",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Agent Systems",
+      "original_row": 2
+    }
+  },
+  "completed": [
+    0,
+    1
+  ],
+  "lastSaved": "2026-06-17T13:08:36.221Z"
 }

@@ -65,7 +65,16 @@
             <span class="stat-label">Remaining</span>
           </div>
         </div>
-        <button class="btn btn-icon" id="btn-export" title="Export responses">
+        <button class="btn btn-export-csv" id="btn-export-csv" title="Export decisions as CSV">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+          Export CSV
+        </button>
+        <button class="btn btn-icon" id="btn-export" title="Export responses (JSON)">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
             <polyline points="7 10 12 15 17 10"/>
@@ -213,6 +222,62 @@
                 </div>
               </div>
               <textarea id="response-textarea" class="response-textarea" placeholder="Paste AI response here (JSON format)..." rows="6"></textarea>
+            </div>
+
+            <!-- Decision Panel -->
+            <div class="decision-section" id="decision-section">
+              <div class="decision-header">
+                <h3>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 11l3 3L22 4"/>
+                    <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                  </svg>
+                  Review Decision
+                </h3>
+              </div>
+              <div class="decision-body">
+                <div class="decision-row">
+                  <div class="decision-field">
+                    <label for="decision-select">Decision</label>
+                    <select id="decision-select" class="decision-select">
+                      <option value="" disabled selected>— Select —</option>
+                      <option value="Keep">✓ Keep</option>
+                      <option value="Move">↗ Move</option>
+                      <option value="Merge">⊕ Merge</option>
+                      <option value="Remove">✕ Remove</option>
+                      <option value="Discuss">💬 Discuss</option>
+                    </select>
+                  </div>
+                  <div class="decision-field decision-field-grow">
+                    <label for="decision-reason">Reason</label>
+                    <input type="text" id="decision-reason" class="decision-input" placeholder="e.g. Fits current category / Better fits software testing / Duplicate..." />
+                  </div>
+                </div>
+                <div class="decision-row">
+                  <div class="decision-field decision-field-grow">
+                    <label for="decision-issues">Issues</label>
+                    <select id="decision-issues" class="decision-select" style="width: 100%;">
+                      <option value="">— None / No Issue —</option>
+                      <option value="Misclassified Concept">Misclassified Concept</option>
+                      <option value="Duplicate Concept">Duplicate Concept</option>
+                      <option value="Ambiguous Concept">Ambiguous Concept</option>
+                      <option value="Overly Generic Concept">Overly Generic Concept</option>
+                      <option value="AI4RSE Relevance Issue">AI4RSE Relevance Issue</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="decision-row hidden" id="decision-newpath-row">
+                  <div class="decision-field decision-field-grow">
+                    <label for="decision-newpath">New Taxonomy Path <span class="label-hint">(for Move only)</span></label>
+                    <input type="text" id="decision-newpath" class="decision-input" placeholder="e.g. Artificial Intelligence → Machine Learning → Supervised Learning" />
+                  </div>
+                </div>
+                <div class="decision-autofill hidden" id="decision-autofill">
+                  <span class="autofill-label">AI suggests:</span>
+                  <button class="btn btn-autofill" id="btn-autofill" title="Apply AI suggestion">Apply Suggestion</button>
+                </div>
+              </div>
             </div>
 
             <!-- Card Actions -->

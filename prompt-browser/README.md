@@ -16,11 +16,12 @@ A local web tool for browsing, copying, and tracking progress through 10,542 tax
    cd /path/to/taxonomy-evaluation/prompt-browser
    ```
 
-2. Start the server:
+2. Start the server using the background automation script:
 
    ```bash
-   python3 server.py
+   ./start.sh
    ```
+   *(Alternatively, run `python3 server.py` directly)*
 
 3. Open your browser and go to:
 
@@ -36,9 +37,10 @@ A local web tool for browsing, copying, and tracking progress through 10,542 tax
 
 1. **Copy** the prompt → click `Copy Prompt` or press `C`
 2. **Paste** it into your AI UI (ChatGPT, Gemini, Claude, etc.)
-3. **Copy** the AI's response
+3. **Copy** the AI's response (in JSON format)
 4. **Paste** it back into the "AI Response" textarea
-5. Click **Save & Next** to save and move forward
+5. The **Review Decision** panel will auto-fill based on the AI's response. You can review and adjust the Decision, Reason, Issues, and New Path.
+6. Click **Save & Next** to save and move forward
 
 ### Keyboard Shortcuts
 
@@ -60,9 +62,16 @@ A local web tool for browsing, copying, and tracking progress through 10,542 tax
 
 - Progress is saved to a **local file** (`prompt-browser/progress.json`) — not browser cache
 - A backup (`progress.backup.json`) is kept automatically on each save
-- Use the **⬇ Export** button (top-right) to download all responses as a separate JSON file
-- Use **⚙ Settings → Import Responses** to restore from a previously exported file
+- Use the **Export CSV** button (top-right) to generate an Excel-ready CSV mapping all your decisions (`AI4RSE_Taxonomy_Decisions.csv`)
+- Use the **JSON Export** button (next to CSV) to download all raw JSON responses
+- Use **⚙ Settings → Import Responses** to restore from a previously exported JSON file
 
 ## Stopping the Server
 
-Press `Ctrl+C` in the terminal where the server is running.
+If you used `./start.sh` to start the server in the background, you can stop it easily by running:
+
+```bash
+./stop.sh
+```
+
+*(If you ran `python3 server.py` manually in your terminal, press `Ctrl+C` to stop it).*
