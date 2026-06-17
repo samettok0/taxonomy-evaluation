@@ -248,6 +248,13 @@ function renderPrompt(index) {
   statusBadge.textContent = isDone ? 'Done' : 'Pending';
   statusBadge.className = isDone ? 'badge badge-status done' : 'badge badge-status';
 
+  // Toggle Reset to Pending button
+  if (isDone) {
+    $('#btn-mark-pending').classList.remove('hidden');
+  } else {
+    $('#btn-mark-pending').classList.add('hidden');
+  }
+
   // Category breadcrumbs
   $('#crumb-high').textContent = prompt.high_level || '—';
   $('#crumb-mid').textContent = prompt.middle_level || '—';
@@ -422,22 +429,19 @@ function saveResponse() {
   showToast(`Saved response for #${index + 1}`, 'success');
 }
 
-function markDone() {
+function markPending() {
   const index = STATE.currentIndex;
-  if (!STATE.responses[index]) {
-    STATE.responses[index] = {
-      response: '',
-      timestamp: new Date().toISOString(),
-      concept_name: STATE.prompts[index].concept_name,
-      category_path: STATE.prompts[index].category_path,
-      original_row: STATE.prompts[index].original_row,
-    };
-  }
-  STATE.completed.add(index);
+  
+  delete STATE.responses[index];
+  STATE.completed.delete(index);
+  
+  // Clear textarea
+  $('#response-textarea').value = '';
+  
   saveState();
   updateStats();
-  renderPrompt(index); // refresh status badge
-  showToast(`#${index + 1} marked as done`, 'success');
+  renderPrompt(index); // refresh status badge & buttons
+  showToast(`#${index + 1} reset to pending`, 'success');
 }
 
 function saveAndNext() {
@@ -713,10 +717,9 @@ function bindEvents() {
   // Save & Next
   $('#btn-save-next').addEventListener('click', saveAndNext);
 
-  // Mark done
-  $('#btn-mark-done').addEventListener('click', () => {
-    markDone();
-    navigateNext();
+  // Reset to pending
+  $('#btn-mark-pending').addEventListener('click', () => {
+    markPending();
   });
 
   // Export
@@ -768,6 +771,10 @@ function bindEvents() {
           saveResponse();
         }
         break;
+      case '/':
+        e.preventDefault();
+        $('#search-input').focus();
+        break;
     }
   });
 
@@ -818,4 +825,183 @@ function bindEvents() {
       }
     }, 1000);
   });
+
+  // Search
+  bindSearchEvents();
 }
+
+// ─── Search ─────────────────────────────────────────
+const MAX_RESULTS = 30;
+let searchSelectedIndex = -1;
+
+function highlightMatch(text, query) {
+  if (!query) return text;
+  const idx = text.toLowerCase().indexOf(query.toLowerCase());
+  if (idx === -1) return text;
+  return (
+    text.slice(0, idx) +
+    '<mark>' + text.slice(idx, idx + query.length) + '</mark>' +
+    text.slice(idx + query.length)
+  );
+}
+
+function runSearch(query) {
+  query = query.trim();
+  const dropdown = $('#search-dropdown');
+  const resultsEl = $('#search-results');
+  const footer = $('#search-footer');
+  const clearBtn = $('#search-clear');
+
+  // Show/hide clear button
+  clearBtn.classList.toggle('hidden', query.length === 0);
+
+  if (!query) {
+    dropdown.classList.add('hidden');
+    return;
+  }
+
+  const q = query.toLowerCase();
+  const matches = [];
+
+  for (let i = 0; i < STATE.prompts.length; i++) {
+    const p = STATE.prompts[i];
+    const conceptMatch = p.concept_name.toLowerCase().includes(q);
+    const catMatch = p.category_path.toLowerCase().includes(q);
+    if (conceptMatch || catMatch) {
+      matches.push({ prompt: p, index: i, conceptMatch, catMatch });
+      if (matches.length >= MAX_RESULTS) break;
+    }
+  }
+
+  searchSelectedIndex = -1;
+  resultsEl.innerHTML = '';
+
+  if (matches.length === 0) {
+    resultsEl.innerHTML = `<div class="search-no-results">No results for “${query}”</div>`;
+    footer.textContent = '';
+  } else {
+    matches.forEach(({ prompt: p, index, conceptMatch, catMatch }, i) => {
+      const item = document.createElement('div');
+      item.className = 'search-result-item';
+      item.dataset.index = index;
+
+      const isDone = STATE.completed.has(index);
+      item.innerHTML = `
+        <span class="result-index">#${index + 1}</span>
+        <div class="result-body">
+          <div class="result-concept">${highlightMatch(p.concept_name, conceptMatch ? query : '')}</div>
+          <div class="result-category">${highlightMatch(p.category_path, catMatch ? query : '')}</div>
+        </div>
+        <span class="result-status ${isDone ? 'done' : ''}"></span>
+      `;
+
+      item.addEventListener('mousedown', (e) => {
+        // mousedown fires before blur — use it to navigate
+        e.preventDefault();
+        selectSearchResult(index);
+      });
+
+      resultsEl.appendChild(item);
+    });
+
+    // Count total matches (continue scan)
+    let total = matches.length;
+    if (matches.length === MAX_RESULTS) {
+      for (let i = matches[matches.length - 1].index + 1; i < STATE.prompts.length; i++) {
+        const p = STATE.prompts[i];
+        if (p.concept_name.toLowerCase().includes(q) || p.category_path.toLowerCase().includes(q)) {
+          total++;
+        }
+      }
+    }
+
+    footer.innerHTML = `
+      <span>${total > MAX_RESULTS ? `Showing ${MAX_RESULTS} of ${total.toLocaleString()}` : `${total} result${total !== 1 ? 's' : ''}`}</span>
+      <span style="color: var(--text-tertiary)">↑↓ navigate &nbsp; Enter select &nbsp; Esc close</span>
+    `;
+  }
+
+  dropdown.classList.remove('hidden');
+}
+
+function selectSearchResult(index) {
+  renderPrompt(index);
+  closeSearch();
+  showToast(`Jumped to #${index + 1}: ${STATE.prompts[index].concept_name}`, 'success');
+}
+
+function closeSearch() {
+  $('#search-dropdown').classList.add('hidden');
+  $('#search-input').blur();
+  searchSelectedIndex = -1;
+}
+
+function moveSearchSelection(dir) {
+  const items = $$('#search-results .search-result-item');
+  if (!items.length) return;
+
+  items[searchSelectedIndex]?.classList.remove('selected');
+  searchSelectedIndex = Math.max(0, Math.min(items.length - 1, searchSelectedIndex + dir));
+  items[searchSelectedIndex].classList.add('selected');
+  items[searchSelectedIndex].scrollIntoView({ block: 'nearest' });
+}
+
+function bindSearchEvents() {
+  const input = $('#search-input');
+  const dropdown = $('#search-dropdown');
+  const clearBtn = $('#search-clear');
+
+  // Debounced search on input
+  let searchTimeout;
+  input.addEventListener('input', () => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => runSearch(input.value), 120);
+  });
+
+  // Keyboard navigation within dropdown
+  input.addEventListener('keydown', (e) => {
+    if (!dropdown.classList.contains('hidden')) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        moveSearchSelection(1);
+        return;
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        moveSearchSelection(-1);
+        return;
+      }
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const items = $$('#search-results .search-result-item');
+        if (searchSelectedIndex >= 0 && items[searchSelectedIndex]) {
+          selectSearchResult(parseInt(items[searchSelectedIndex].dataset.index));
+        } else if (items.length === 1) {
+          selectSearchResult(parseInt(items[0].dataset.index));
+        }
+        return;
+      }
+    }
+    if (e.key === 'Escape') {
+      closeSearch();
+      input.value = '';
+      clearBtn.classList.add('hidden');
+    }
+  });
+
+  // Close when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!$('#search-box').contains(e.target)) {
+      dropdown.classList.add('hidden');
+    }
+  });
+
+  // Clear button
+  clearBtn.addEventListener('click', () => {
+    input.value = '';
+    clearBtn.classList.add('hidden');
+    dropdown.classList.add('hidden');
+    input.focus();
+  });
+}
+

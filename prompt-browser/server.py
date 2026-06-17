@@ -103,9 +103,12 @@ class PromptBrowserHandler(http.server.SimpleHTTPRequestHandler):
 
     def log_message(self, format, *args):
         """Custom logging — suppress static file noise, show API calls."""
-        path = args[0].split()[1] if args else ""
-        if path.startswith("/api/"):
-            print(f"  {args[0]}")
+        try:
+            path = str(args[0]).split()[1] if args else ""
+            if path.startswith("/api/"):
+                print(f"  {args[0]}")
+        except Exception:
+            pass
 
 
 def main():
