@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI4RSE Taxonomy — Prompt Browser</title>
+  <meta name="description" content="Browse and copy taxonomy evaluation prompts for manual AI validation">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div id="loading-screen" class="loading-screen">
+    <div class="loading-content">
+      <div class="loading-icon">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <h1>AI4RSE Taxonomy</h1>
+      <p class="loading-subtitle">Prompt Browser</p>
+      <div class="loading-bar-track">
+        <div id="loading-bar" class="loading-bar"></div>
+      </div>
+      <p id="loading-status" class="loading-status">Initializing...</p>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div id="app" class="app hidden">
+    <!-- Header -->
+    <header id="main-header" class="header">
+      <div class="header-left">
+        <div class="logo">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div class="header-title">
+          <h1>AI4RSE Prompt Browser</h1>
+          <span class="header-badge" id="total-badge">0 prompts</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="progress-ring-container" id="progress-ring-container" title="Overall progress">
+          <svg class="progress-ring" width="44" height="44">
+            <circle class="progress-ring-bg" cx="22" cy="22" r="18" />
+            <circle class="progress-ring-fill" id="progress-ring-fill" cx="22" cy="22" r="18" />
+          </svg>
+          <span class="progress-ring-text" id="progress-ring-text">0%</span>
+        </div>
+        <div class="header-stats">
+          <div class="stat" id="stat-done">
+            <span class="stat-value">0</span>
+            <span class="stat-label">Done</span>
+          </div>
+          <div class="stat" id="stat-remaining">
+            <span class="stat-value">0</span>
+            <span class="stat-label">Remaining</span>
+          </div>
+        </div>
+        <button class="btn btn-icon" id="btn-export" title="Export responses">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+        </button>
+        <button class="btn btn-icon" id="btn-settings" title="Settings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.32 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+      <!-- Sidebar -->
+      <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+          <h2>Categories</h2>
+          <div class="sidebar-filter">
+            <input type="text" id="category-search" placeholder="Search categories..." class="input-search" />
+          </div>
+        </div>
+        <div class="sidebar-tabs">
+          <button class="tab active" data-filter="all" id="tab-all">All</button>
+          <button class="tab" data-filter="pending" id="tab-pending">Pending</button>
+          <button class="tab" data-filter="done" id="tab-done">Done</button>
+        </div>
+        <nav id="category-list" class="category-list">
+          <!-- Categories populated by JS -->
+        </nav>
+      </aside>
+
+      <!-- Content -->
+      <main class="content">
+        <!-- Navigation Bar -->
+        <div class="nav-bar">
+          <div class="nav-controls">
+            <button class="btn btn-nav" id="btn-prev" title="Previous prompt (←)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 18 9 12 15 6"/>
+              </svg>
+            </button>
+            <div class="nav-index">
+              <input type="number" id="nav-input" class="nav-input" min="1" max="10542" value="1" />
+              <span class="nav-total">/ <span id="nav-total-display">10542</span></span>
+            </div>
+            <button class="btn btn-nav" id="btn-next" title="Next prompt (→)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+          </div>
+          <div class="nav-actions">
+            <button class="btn btn-secondary" id="btn-skip-to-next-pending" title="Skip to next pending">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="5 4 15 12 5 20 5 4"/>
+                <line x1="19" y1="5" x2="19" y2="19"/>
+              </svg>
+              Next Pending
+            </button>
+            <select id="category-filter-select" class="select-filter">
+              <option value="">All Categories</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Prompt Card -->
+        <div class="prompt-card-wrapper">
+          <div class="prompt-card" id="prompt-card">
+            <!-- Card Header -->
+            <div class="card-header">
+              <div class="card-meta">
+                <span class="badge badge-index" id="card-index">#1</span>
+                <span class="badge badge-row" id="card-row">Row 1</span>
+                <span class="badge badge-status" id="card-status">Pending</span>
+              </div>
+              <div class="card-category" id="card-category">
+                <span class="crumb" id="crumb-high">—</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                <span class="crumb" id="crumb-mid">—</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                <span class="crumb" id="crumb-low">—</span>
+              </div>
+            </div>
+
+            <!-- Concept Info -->
+            <div class="concept-section">
+              <div class="concept-name-row">
+                <h2 class="concept-name" id="concept-name">—</h2>
+              </div>
+              <p class="concept-definition" id="concept-definition">—</p>
+            </div>
+
+            <!-- Prompt Text -->
+            <div class="prompt-section">
+              <div class="prompt-section-header">
+                <h3>Prompt</h3>
+                <button class="btn btn-copy" id="btn-copy" title="Copy prompt to clipboard">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                    <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+                  </svg>
+                  <span class="btn-copy-label">Copy Prompt</span>
+                </button>
+              </div>
+              <pre class="prompt-text" id="prompt-text">—</pre>
+            </div>
+
+            <!-- Response Section -->
+            <div class="response-section">
+              <div class="response-header">
+                <h3>AI Response</h3>
+                <div class="response-actions">
+                  <button class="btn btn-secondary btn-sm" id="btn-paste" title="Paste from clipboard">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/>
+                      <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+                    </svg>
+                    Paste
+                  </button>
+                  <button class="btn btn-secondary btn-sm" id="btn-clear-response" title="Clear response">
+                    Clear
+                  </button>
+                </div>
+              </div>
+              <textarea id="response-textarea" class="response-textarea" placeholder="Paste AI response here (JSON format)..." rows="6"></textarea>
+            </div>
+
+            <!-- Card Actions -->
+            <div class="card-actions">
+              <button class="btn btn-primary btn-lg" id="btn-save-next">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Save & Next
+              </button>
+              <button class="btn btn-secondary btn-lg" id="btn-mark-done">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Mark Done (No Response)
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast hidden">
+      <span id="toast-message"></span>
+    </div>
+
+    <!-- Settings Modal -->
+    <dialog id="settings-dialog" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Settings</h2>
+          <button class="btn btn-icon modal-close" id="btn-close-settings">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="setting-group">
+            <h3>Data Management</h3>
+            <p class="setting-desc">Your progress is saved automatically in your browser's localStorage.</p>
+            <div class="setting-actions">
+              <button class="btn btn-secondary" id="btn-export-responses">Export All Responses (JSON)</button>
+              <button class="btn btn-secondary" id="btn-import-responses">Import Responses</button>
+              <input type="file" id="import-file" accept=".json" style="display:none">
+            </div>
+          </div>
+          <div class="setting-group">
+            <h3>Reset Progress</h3>
+            <p class="setting-desc warning-text">This will permanently delete all saved responses and progress tracking.</p>
+            <button class="btn btn-danger" id="btn-reset">Reset All Progress</button>
+          </div>
+        </div>
+      </div>
+    </dialog>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
