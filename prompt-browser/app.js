@@ -15,13 +15,15 @@ const STATE = {
   filteredIndices: null, // null = show all
   listFilters: { search: '', status: 'all', decision: 'all', page: 1, limit: 100, tree: { high: null, middle: null, low: null } },
   currentView: 'list',
+  templates: [],
+  activeTemplateId: 't1',
 };
 
-const STORAGE_KEY = 'ai4rse-prompt-browser';
-
-// ─── Prompt Template ────────────────────────────────────────
-function buildPromptText(entry) {
-  return `You are an expert in Artificial Intelligence, Software Engineering, Ontology Engineering, Knowledge Organization, and Taxonomy Engineering.
+const DEFAULT_TEMPLATES = [
+  {
+    id: 't1',
+    name: 'Default IEEE Alignment',
+    content: `You are an expert in Artificial Intelligence, Software Engineering, Ontology Engineering, Knowledge Organization, and Taxonomy Engineering.
 
 Context:
 We are evaluating a taxonomy for Artificial Intelligence for Research Software Engineering (AI4RSE). The current taxonomy is aligned with the IEEE Taxonomy (2025 edition). The categorization below was generated automatically and now requires validation.
@@ -29,13 +31,13 @@ We are evaluating a taxonomy for Artificial Intelligence for Research Software E
 Your task is not to redesign the IEEE taxonomy. Instead, evaluate whether the concept is appropriately aligned with the current taxonomy path.
 
 Concept:
-${entry.concept_name}
+{{concept_name}}
 
 Definition:
-${entry.concept_definition}
+{{concept_definition}}
 
 Current Taxonomy Path:
-${entry.high_level} > ${entry.middle_level} > ${entry.low_level}
+{{high_level}} > {{middle_level}} > {{low_level}}
 
 Please answer the following questions:
 1. Does the concept belong to the assigned category path?
@@ -50,7 +52,61 @@ Return your answer in JSON format:
   "suggested path": "High-Level > Middle-Level > Low-Level (or N/A)",
   "confidence": 1-5,
   "reasoning": "Your one short sentence explanation here."
-}`;
+}`
+  },
+  {
+    id: 't2',
+    name: 'Advanced Issue Detection',
+    content: `You are an expert in Artificial Intelligence, Software Engineering, Ontology Engineering, Knowledge Organization, and Taxonomy Engineering.
+
+Context:
+We are evaluating a taxonomy for Artificial Intelligence for Research Software Engineering (AI4RSE). The current taxonomy is aligned with the IEEE Taxonomy (2025 edition). The categorization below was generated automatically and now requires validation.
+
+Your task is not to redesign the IEEE taxonomy. Instead, evaluate the concept and determine if it has any of the following issues:
+- Misclassified Concept: Assigned to an inappropriate category path.
+- Ambiguous Concept: Unclear meaning or fits multiple categories equally well.
+- Overly Generic Concept: Too broad to be useful as a specific taxonomy node.
+- AI4RSE Relevance Issue: Valid AI concept, but does not contribute meaningfully to the AI4RSE domain.
+
+Concept:
+{{concept_name}}
+
+Definition:
+{{concept_definition}}
+
+Current Taxonomy Path:
+{{high_level}} > {{middle_level}} > {{low_level}}
+
+Please answer the following questions mentally before outputting your JSON:
+1. Does the concept suffer from ambiguity, being overly generic, or lacking relevance to the AI4RSE domain?
+2. If it is relevant and clear, does it belong to the assigned category path? Is it consistent with the IEEE Taxonomy?
+3. Based on your evaluation, what is the primary issue? (If multiple exist, pick the most critical one. If none, pick "None").
+4. If the concept is misclassified but otherwise valid, suggest a more appropriate category path.
+5. Explain your reasoning in one short sentence.
+
+Return your final answer in EXACTLY this JSON format (and nothing else):
+{
+  "alignment": "Correct | Partially Correct | Incorrect",
+  "issue": "None | Misclassified Concept | Ambiguous Concept | Overly Generic Concept | AI4RSE Relevance Issue",
+  "suggested_path": "High-Level > Middle-Level > Low-Level (or N/A)",
+  "confidence": 1-5,
+  "reasoning": "Your one short sentence explanation here."
+}`
+  }
+];
+
+const STORAGE_KEY = 'ai4rse-prompt-browser';
+
+// ─── Prompt Template ────────────────────────────────────────
+function buildPromptText(entry) {
+  const template = STATE.templates.find(t => t.id === STATE.activeTemplateId) || STATE.templates[0] || DEFAULT_TEMPLATES[0];
+  let text = template.content;
+  text = text.replace(/\{\{concept_name\}\}/g, entry.concept_name || '—');
+  text = text.replace(/\{\{concept_definition\}\}/g, entry.concept_definition || '—');
+  text = text.replace(/\{\{high_level\}\}/g, entry.high_level || '—');
+  text = text.replace(/\{\{middle_level\}\}/g, entry.middle_level || '—');
+  text = text.replace(/\{\{low_level\}\}/g, entry.low_level || '—');
+  return text;
 }
 
 // ─── DOM References ─────────────────────────────────────────
@@ -119,6 +175,9 @@ function initUI() {
   $('#total-badge').textContent = `${STATE.prompts.length.toLocaleString()} prompts`;
   $('#nav-total-display').textContent = STATE.prompts.length.toLocaleString();
   $('#nav-input').max = STATE.prompts.length;
+
+  // Initialize Templates
+  renderTemplateDropdown();
 
   // Render Tree
   renderTree();
@@ -630,6 +689,8 @@ async function _doSave() {
     currentIndex: STATE.currentIndex,
     responses: STATE.responses,
     completed: [...STATE.completed],
+    templates: STATE.templates,
+    activeTemplateId: STATE.activeTemplateId,
     lastSaved: new Date().toISOString(),
   };
   try {
@@ -658,6 +719,8 @@ async function loadSavedState() {
       STATE.currentIndex = data.currentIndex || 0;
       STATE.responses = data.responses || {};
       STATE.completed = new Set(data.completed || []);
+      STATE.templates = data.templates && data.templates.length > 0 ? data.templates : [...DEFAULT_TEMPLATES];
+      STATE.activeTemplateId = data.activeTemplateId || 't1';
       return;
     }
   } catch (e) {
@@ -672,6 +735,8 @@ async function loadSavedState() {
     STATE.currentIndex = data.currentIndex || 0;
     STATE.responses = data.responses || {};
     STATE.completed = new Set(data.completed || []);
+    STATE.templates = data.templates && data.templates.length > 0 ? data.templates : [...DEFAULT_TEMPLATES];
+    STATE.activeTemplateId = data.activeTemplateId || 't1';
   } catch (e) {
     console.warn('Could not load saved state:', e);
   }
@@ -810,6 +875,99 @@ function showToast(message, type = '') {
   toastTimeout = setTimeout(() => {
     toast.classList.add('hidden');
   }, 3000);
+}
+
+// ─── Template Management ────────────────────────────────────
+
+function renderTemplateDropdown() {
+  const select = $('#prompt-template-select');
+  select.innerHTML = '';
+  STATE.templates.forEach(t => {
+    const opt = document.createElement('option');
+    opt.value = t.id;
+    opt.textContent = t.name;
+    if (t.id === STATE.activeTemplateId) opt.selected = true;
+    select.appendChild(opt);
+  });
+}
+
+function renderTemplatesModalList() {
+  const list = $('#templates-list');
+  list.innerHTML = '';
+  STATE.templates.forEach(t => {
+    const opt = document.createElement('option');
+    opt.value = t.id;
+    opt.textContent = t.name;
+    list.appendChild(opt);
+  });
+}
+
+function loadTemplateIntoEditor(id) {
+  const t = STATE.templates.find(t => t.id === id);
+  if (!t) return;
+  $('#template-name').value = t.name;
+  $('#template-content').value = t.content;
+  $('#template-save-status').classList.add('hidden');
+}
+
+function saveTemplateFromEditor() {
+  const id = $('#templates-list').value;
+  if (!id) return;
+  const t = STATE.templates.find(t => t.id === id);
+  if (!t) return;
+  
+  t.name = $('#template-name').value.trim() || 'Untitled Template';
+  t.content = $('#template-content').value;
+  
+  renderTemplateDropdown();
+  renderTemplatesModalList();
+  $('#templates-list').value = t.id;
+  
+  if (STATE.activeTemplateId === t.id) {
+    renderPrompt(STATE.currentIndex);
+  }
+  
+  saveState();
+  
+  $('#template-save-status').classList.remove('hidden');
+  setTimeout(() => $('#template-save-status').classList.add('hidden'), 2000);
+}
+
+function createNewTemplate() {
+  const newId = 't' + Date.now();
+  const newTpl = {
+    id: newId,
+    name: 'New Template',
+    content: 'Concept: {{concept_name}}\\nDefinition: {{concept_definition}}\\nPath: {{high_level}} > {{middle_level}} > {{low_level}}\\n\\nYour prompt here...'
+  };
+  STATE.templates.push(newTpl);
+  renderTemplatesModalList();
+  $('#templates-list').value = newId;
+  loadTemplateIntoEditor(newId);
+  renderTemplateDropdown();
+  saveState();
+}
+
+function deleteTemplate() {
+  if (STATE.templates.length <= 1) {
+    alert("You must have at least one template.");
+    return;
+  }
+  const id = $('#templates-list').value;
+  if (!id) return;
+  if (!confirm("Are you sure you want to delete this template?")) return;
+  
+  STATE.templates = STATE.templates.filter(t => t.id !== id);
+  if (STATE.activeTemplateId === id) {
+    STATE.activeTemplateId = STATE.templates[0].id;
+    renderPrompt(STATE.currentIndex);
+  }
+  
+  renderTemplateDropdown();
+  renderTemplatesModalList();
+  $('#templates-list').value = STATE.templates[0].id;
+  loadTemplateIntoEditor(STATE.templates[0].id);
+  saveState();
 }
 
 // ─── Event Bindings ─────────────────────────────────────────
@@ -1004,6 +1162,32 @@ function bindEvents() {
 
   // Search
   bindSearchEvents();
+
+  // Template Management
+  $('#prompt-template-select').addEventListener('change', (e) => {
+    STATE.activeTemplateId = e.target.value;
+    saveState();
+    renderPrompt(STATE.currentIndex);
+  });
+
+  $('#btn-edit-templates').addEventListener('click', () => {
+    renderTemplatesModalList();
+    $('#templates-list').value = STATE.activeTemplateId;
+    loadTemplateIntoEditor(STATE.activeTemplateId);
+    $('#templates-dialog').showModal();
+  });
+
+  $('#btn-close-templates').addEventListener('click', () => {
+    $('#templates-dialog').close();
+  });
+
+  $('#templates-list').addEventListener('change', (e) => {
+    loadTemplateIntoEditor(e.target.value);
+  });
+
+  $('#btn-save-template').addEventListener('click', saveTemplateFromEditor);
+  $('#btn-new-template').addEventListener('click', createNewTemplate);
+  $('#btn-delete-template').addEventListener('click', deleteTemplate);
 }
 
 // ─── Search ─────────────────────────────────────────
@@ -1198,15 +1382,25 @@ function tryAutoParseJSON() {
 
     const alignment = data.alignment.toLowerCase();
     let decision = '';
+    
+    // First, check if there's an explicit issue that dictates the decision
+    let issue = data.issue || '';
+    if (issue && issue !== 'None') {
+      // If misclassified, usually we Move or Discuss.
+      // If overly generic or irrelevant, usually Remove or Discuss.
+      // But we can let the alignment parsing or user decide. We will just capture the issue.
+    }
+    
     if (alignment.includes('partially')) decision = 'Discuss';
     else if (alignment.includes('incorrect')) decision = 'Move';
     else if (alignment.includes('correct')) decision = 'Keep';
 
-    if (decision) {
+    if (decision || issue) {
       autoParsedDecision = {
         decision: decision,
         reason: data.reasoning || '',
-        newPath: decision === 'Move' ? (data['suggested path'] || '') : ''
+        newPath: decision === 'Move' ? (data['suggested_path'] || data['suggested path'] || '') : '',
+        issues: issue === 'None' ? '' : issue
       };
 
       $('#decision-autofill').classList.remove('hidden');
