@@ -1,20 +1,342 @@
 {
-  "currentIndex": 9289,
+  "currentIndex": 33,
   "responses": {
-    "8893": {
-      "response": "{\n  \"alignment\": \"Incorrect\",\n  \"suggested path\": \"Computers and information processing > Distributed computing > Cluster computing\",\n  \"confidence\": 5,\n  \"reasoning\": \"The current path uses categories absent from the official IEEE taxonomy, whereas Apache Spark workloads are explicitly mapped to distributed and cluster computing frameworks.\"\n}",
+    "0": {
+      "response": "{\n  \"alignment\": \"Incorrect\",\n  \"issue\": \"Misclassified Concept\",\n  \"suggested_path\": \"Computers and information processing > Software > Software agents > Autonomous agents\",\n  \"confidence\": 5,\n  \"reasoning\": \"The current path incorrectly nests sibling categories and uses non-existent IEEE terms, whereas the concept is best aligned with autonomous agents within the software systems branch.\"\n}",
       "decision": "Move",
-      "reason": "The current path uses categories absent from the official IEEE taxonomy, whereas Apache Spark workloads are explicitly mapped to distributed and cluster computing frameworks.",
-      "issues": "",
-      "newPath": "Computers and information processing > Distributed computing > Cluster computing",
-      "timestamp": "2026-06-17T14:46:04.715Z",
+      "reason": "The current path incorrectly nests sibling categories and uses non-existent IEEE terms, whereas the concept is best aligned with autonomous agents within the software systems branch.",
+      "issues": "Misclassified Concept",
+      "newPath": "Computers and information processing > Software > Software agents > Autonomous agents",
+      "timestamp": "2026-06-18T08:26:10.604Z",
+      "concept_name": "active goal model",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Agent Systems",
+      "original_row": 1
+    },
+    "1": {
+      "response": "{\n  \"alignment\": \"Incorrect\",\n  \"issue\": \"Misclassified Concept\",\n  \"suggested_path\": \"Computers and information processing > Software > Software agents\",\n  \"confidence\": 5,\n  \"reasoning\": \"The current path uses the non-existent IEEE term 'Agent Systems', whereas the official taxonomy categorizes agent frameworks under 'Computers and information processing > Software > Software agents'.\"\n}",
+      "decision": "Move",
+      "reason": "The current path uses the non-existent IEEE term 'Agent Systems', whereas the official taxonomy categorizes agent frameworks under 'Computers and information processing > Software > Software agents'.",
+      "issues": "Misclassified Concept",
+      "newPath": "Computers and information processing > Software > Software agents",
+      "timestamp": "2026-06-18T08:26:36.650Z",
+      "concept_name": "agent architecture",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Agent Systems",
+      "original_row": 2
+    },
+    "20": {
+      "issue": "misclassified",
+      "suggested_low_level": "Genetic operators",
+      "confidence": 1,
+      "reasoning": "Crossover is a genetic operator under Genetic algorithms.",
+      "timestamp": "2026-06-18T14:53:29.354Z",
+      "concept_name": "adaptive crossover",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Evolutionary Computation",
+      "original_row": 21
+    },
+    "21": {
+      "issue": "none",
+      "suggested_low_level": "",
+      "confidence": 0.9,
+      "reasoning": "Appropriately aligned with Evolutionary computation.",
+      "timestamp": "2026-06-18T14:53:29.354Z",
+      "concept_name": "adaptive fitness function",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Evolutionary Computation",
+      "original_row": 22
+    },
+    "22": {
+      "issue": "none",
+      "suggested_low_level": "",
+      "confidence": 0.9,
+      "reasoning": "Directly relates to evolutionary computation optimization.",
+      "timestamp": "2026-06-18T14:53:29.354Z",
+      "concept_name": "best fitness function value",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Evolutionary Computation",
+      "original_row": 23
+    },
+    "23": {
+      "issue": "misclassified",
+      "suggested_low_level": "Genetic algorithms",
+      "confidence": 1,
+      "reasoning": "Genetic algorithms is a distinct category in IEEE 2025.",
+      "timestamp": "2026-06-18T14:53:29.354Z",
+      "concept_name": "compact genetic algorithm",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Evolutionary Computation",
+      "original_row": 24
+    },
+    "24": {
+      "issue": "irrelevant",
+      "suggested_low_level": "",
+      "confidence": 0.95,
+      "reasoning": "Specific to agriculture and plant breeding, not AI4RSE.",
+      "timestamp": "2026-06-18T14:53:29.354Z",
+      "concept_name": "crop population",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Evolutionary Computation",
+      "original_row": 25
+    },
+    "25": {
+      "issue": "misclassified",
+      "suggested_low_level": "Genetic operators",
+      "confidence": 1,
+      "reasoning": "Crossover is explicitly a genetic operator.",
+      "timestamp": "2026-06-18T14:53:29.354Z",
+      "concept_name": "crossover",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Evolutionary Computation",
+      "original_row": 26
+    },
+    "26": {
+      "issue": "misclassified",
+      "suggested_low_level": "Genetic operators",
+      "confidence": 1,
+      "reasoning": "Crossover probability is a parameter of genetic operators.",
+      "timestamp": "2026-06-18T14:53:29.354Z",
+      "concept_name": "crossover probability pc",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Evolutionary Computation",
+      "original_row": 27
+    },
+    "27": {
+      "issue": "none",
+      "suggested_low_level": "",
+      "confidence": 0.9,
+      "reasoning": "Key metric in multi-objective evolutionary computation.",
+      "timestamp": "2026-06-18T14:53:29.354Z",
+      "concept_name": "crowding distance",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Evolutionary Computation",
+      "original_row": 28
+    },
+    "28": {
+      "issue": "none",
+      "suggested_low_level": "",
+      "confidence": 0.85,
+      "reasoning": "Refers to a mode of evolutionary computation.",
+      "timestamp": "2026-06-18T14:53:29.354Z",
+      "concept_name": "darwinian mode",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Evolutionary Computation",
+      "original_row": 29
+    },
+    "29": {
+      "issue": "none",
+      "suggested_low_level": "",
+      "confidence": 1,
+      "reasoning": "Differential evolution is a core evolutionary computation algorithm.",
+      "timestamp": "2026-06-18T14:53:29.354Z",
+      "concept_name": "differential evolution",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Evolutionary Computation",
+      "original_row": 30
+    },
+    "30": {
+      "issue": "misclassified",
+      "suggested_low_level": "Genetic operators",
+      "confidence": 0.9,
+      "reasoning": "Refers to mutation and crossover, which are genetic operators.",
+      "timestamp": "2026-06-18T14:53:29.354Z",
+      "concept_name": "ec operators",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Evolutionary Computation",
+      "original_row": 31
+    },
+    "31": {
+      "issue": "none",
+      "suggested_low_level": "",
+      "confidence": 0.9,
+      "reasoning": "An evolutionary algorithm design for optimization.",
+      "timestamp": "2026-06-18T14:53:29.354Z",
+      "concept_name": "estimation of distribution algorithm",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Evolutionary Computation",
+      "original_row": 32
+    },
+    "32": {
+      "issue": "overly_generic",
+      "suggested_low_level": "",
+      "confidence": 0.9,
+      "reasoning": "Redundant with the parent category 'Evolutionary computation'.",
+      "timestamp": "2026-06-18T14:53:29.354Z",
+      "concept_name": "evolutionary algorithm",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Evolutionary Computation",
+      "original_row": 33
+    },
+    "33": {
+      "issue": "overly_generic",
+      "suggested_low_level": "",
+      "confidence": 0.9,
+      "reasoning": "Redundant plural of the parent category.",
+      "timestamp": "2026-06-18T14:53:29.354Z",
+      "concept_name": "evolutionary algorithms",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Evolutionary Computation",
+      "original_row": 34
+    },
+    "34": {
+      "issue": "overly_generic",
+      "suggested_low_level": "",
+      "confidence": 1,
+      "reasoning": "Identical to the parent category name.",
+      "timestamp": "2026-06-18T14:53:29.354Z",
+      "concept_name": "evolutionary computation",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Evolutionary Computation",
+      "original_row": 35
+    },
+    "35": {
+      "issue": "misclassified",
+      "suggested_low_level": "Genetic operators",
+      "confidence": 0.9,
+      "reasoning": "Operators like crossover/mutation are classified under Genetic operators.",
+      "timestamp": "2026-06-18T14:53:29.354Z",
+      "concept_name": "evolutionary operators",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Evolutionary Computation",
+      "original_row": 36
+    },
+    "36": {
+      "issue": "none",
+      "suggested_low_level": "",
+      "confidence": 0.9,
+      "reasoning": "Standard state representation in evolutionary computation.",
+      "timestamp": "2026-06-18T14:53:29.354Z",
+      "concept_name": "final population",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Evolutionary Computation",
+      "original_row": 37
+    },
+    "37": {
+      "issue": "none",
+      "suggested_low_level": "",
+      "confidence": 0.9,
+      "reasoning": "Core process in evolutionary computation.",
+      "timestamp": "2026-06-18T14:53:29.354Z",
+      "concept_name": "fitness evaluation",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Evolutionary Computation",
+      "original_row": 38
+    },
+    "38": {
+      "issue": "none",
+      "suggested_low_level": "",
+      "confidence": 0.95,
+      "reasoning": "Fundamental component of evolutionary computation.",
+      "timestamp": "2026-06-18T14:53:29.354Z",
+      "concept_name": "fitness function",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Evolutionary Computation",
+      "original_row": 39
+    },
+    "39": {
+      "issue": "none",
+      "suggested_low_level": "",
+      "confidence": 0.95,
+      "reasoning": "Basic metric used in evolutionary computation.",
+      "timestamp": "2026-06-18T14:53:29.354Z",
+      "concept_name": "fitness value",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Evolutionary Computation",
+      "original_row": 40
+    },
+    "40": {
+      "issue": "none",
+      "suggested_low_level": "",
+      "confidence": 0.9,
+      "reasoning": "Standard type of evolutionary fitness function.",
+      "timestamp": "2026-06-18T14:53:29.354Z",
+      "concept_name": "fixed fitness functions",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Evolutionary Computation",
+      "original_row": 41
+    },
+    "41": {
+      "issue": "misclassified",
+      "suggested_low_level": "Genetic algorithms",
+      "confidence": 1,
+      "reasoning": "Refers to Genetic Algorithms, a separate IEEE category.",
+      "timestamp": "2026-06-18T14:53:29.354Z",
+      "concept_name": "ga method",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Evolutionary Computation",
+      "original_row": 42
+    },
+    "42": {
+      "issue": "none",
+      "suggested_low_level": "",
+      "confidence": 0.9,
+      "reasoning": "Standard iteration representation in evolutionary algorithms.",
+      "timestamp": "2026-06-18T14:53:29.354Z",
+      "concept_name": "generations",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Evolutionary Computation",
+      "original_row": 43
+    },
+    "43": {
+      "issue": "misclassified",
+      "suggested_low_level": "Genetic algorithms",
+      "confidence": 1,
+      "reasoning": "Should be placed in the specific Genetic algorithms category.",
+      "timestamp": "2026-06-18T14:53:29.354Z",
+      "concept_name": "genetic algorithm",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Evolutionary Computation",
+      "original_row": 44
+    },
+    "44": {
+      "issue": "misclassified",
+      "suggested_low_level": "Genetic algorithms",
+      "confidence": 1,
+      "reasoning": "Matches the official IEEE 'Genetic algorithms' category.",
+      "timestamp": "2026-06-18T14:53:29.354Z",
+      "concept_name": "genetic algorithms",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Evolutionary Computation",
+      "original_row": 45
+    },
+    "45": {
+      "issue": "overly_generic",
+      "suggested_low_level": "",
+      "confidence": 0.95,
+      "reasoning": "Combines two high-level computational intelligence concepts.",
+      "timestamp": "2026-06-18T14:53:29.354Z",
+      "concept_name": "genetic and evolutionary computation",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Evolutionary Computation",
+      "original_row": 46
+    },
+    "233": {
+      "response": "{\"alignment\":\"Incorrect\",\"issue\":\"Misclassified Concept\",\"suggested_path\":\"Mathematics > Algorithms > Whale optimization algorithms\",\"confidence\":5,\"reasoning\":\"The IEEE 2025 taxonomy explicitly categorizes 'Whale optimization algorithms' under 'Mathematics > Algorithms' rather than the 'Artificial intelligence' branch.\"}",
+      "decision": "Move",
+      "reason": "The IEEE 2025 taxonomy explicitly categorizes 'Whale optimization algorithms' under 'Mathematics > Algorithms' rather than the 'Artificial intelligence' branch.",
+      "issues": "Misclassified Concept",
+      "newPath": "Mathematics > Algorithms > Whale optimization algorithms",
+      "timestamp": "2026-06-17T15:31:48.326Z",
+      "concept_name": "whale optimization algorithm",
+      "category_path": "Artificial Intelligence \u2192 Computational Intelligence \u2192 Swarm Intelligence",
+      "original_row": 234
+    },
+    "8893": {
+      "response": "{\"alignment\":\"Incorrect\",\"issue\":\"Misclassified Concept\",\"suggested_path\":\"Computers and information processing > Distributed computing\",\"confidence\":5,\"reasoning\":\"The current path uses categories not present in the IEEE 2025 taxonomy, whereas Spark workloads are fundamentally a distributed computing concern.\"}",
+      "decision": "Move",
+      "reason": "The current path uses categories not present in the IEEE 2025 taxonomy, whereas Spark workloads are fundamentally a distributed computing concern.",
+      "issues": "Misclassified Concept",
+      "newPath": "Computers and information processing > Distributed computing",
+      "timestamp": "2026-06-17T15:39:33.313Z",
       "concept_name": "spark workloads",
       "category_path": "Software Engineering \u2192 Infrastructure and Deployment \u2192 Data Operations Pipelines",
       "original_row": 8894
     }
   },
   "completed": [
-    8893
+    8893,
+    233,
+    0,
+    1,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
   ],
   "templates": [
     {
@@ -28,6 +350,7 @@
       "content": "You are an expert in Artificial Intelligence, Software Engineering, Ontology Engineering, Knowledge Organization, and Taxonomy Engineering.\n\nContext:\nWe are evaluating a taxonomy for Artificial Intelligence for Research Software Engineering (AI4RSE). The current taxonomy is aligned with the IEEE Taxonomy (2025 edition). The categorization below was generated automatically and now requires validation.\n\nYour task is not to redesign the IEEE taxonomy. Instead, evaluate the concept and determine if it has any of the following issues:\n- Misclassified Concept: Assigned to an inappropriate category path.\n- Ambiguous Concept: Unclear meaning or fits multiple categories equally well.\n- Overly Generic Concept: Too broad to be useful as a specific taxonomy node.\n- AI4RSE Relevance Issue: Valid AI concept, but does not contribute meaningfully to the AI4RSE domain.\n\nConcept:\n{{concept_name}}\n\nDefinition:\n{{concept_definition}}\n\nCurrent Taxonomy Path:\n{{high_level}} > {{middle_level}} > {{low_level}}\n\nPlease answer the following questions mentally before outputting your JSON:\n1. Does the concept suffer from ambiguity, being overly generic, or lacking relevance to the AI4RSE domain?\n2. If it is relevant and clear, does it belong to the assigned category path? Is it consistent with the IEEE Taxonomy?\n3. Based on your evaluation, what is the primary issue? (If multiple exist, pick the most critical one. If none, pick \"None\").\n4. If the concept is misclassified but otherwise valid, suggest a more appropriate category path.\n5. Explain your reasoning in one short sentence.\n\nReturn your final answer in EXACTLY this JSON format (and nothing else):\n{\n  \"alignment\": \"Correct | Partially Correct | Incorrect\",\n  \"issue\": \"None | Misclassified Concept | Ambiguous Concept | Overly Generic Concept | AI4RSE Relevance Issue\",\n  \"suggested_path\": \"High-Level > Middle-Level > Low-Level (or N/A)\",\n  \"confidence\": 1-5,\n  \"reasoning\": \"Your one short sentence explanation here.\"\n}"
     }
   ],
-  "activeTemplateId": "t1",
-  "lastSaved": "2026-06-17T15:09:57.305Z"
+  "activeTemplateId": "t2",
+  "lastBatchedIndex": 66,
+  "lastSaved": "2026-06-19T12:18:16.288Z"
 }

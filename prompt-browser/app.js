@@ -17,6 +17,7 @@ const STATE = {
   currentView: 'list',
   templates: [],
   activeTemplateId: 't1',
+  lastBatchedIndex: 1,
 };
 
 const DEFAULT_TEMPLATES = [
@@ -691,6 +692,7 @@ async function _doSave() {
     completed: [...STATE.completed],
     templates: STATE.templates,
     activeTemplateId: STATE.activeTemplateId,
+    lastBatchedIndex: STATE.lastBatchedIndex,
     lastSaved: new Date().toISOString(),
   };
   try {
@@ -721,6 +723,7 @@ async function loadSavedState() {
       STATE.completed = new Set(data.completed || []);
       STATE.templates = data.templates && data.templates.length > 0 ? data.templates : [...DEFAULT_TEMPLATES];
       STATE.activeTemplateId = data.activeTemplateId || 't1';
+      STATE.lastBatchedIndex = data.lastBatchedIndex || 1;
       return;
     }
   } catch (e) {
@@ -737,6 +740,7 @@ async function loadSavedState() {
     STATE.completed = new Set(data.completed || []);
     STATE.templates = data.templates && data.templates.length > 0 ? data.templates : [...DEFAULT_TEMPLATES];
     STATE.activeTemplateId = data.activeTemplateId || 't1';
+    STATE.lastBatchedIndex = data.lastBatchedIndex || 1;
   } catch (e) {
     console.warn('Could not load saved state:', e);
   }
@@ -852,6 +856,136 @@ function importResponses(file) {
     }
   };
   reader.readAsText(file);
+}
+
+// ─── Batch Tools ────────────────────────────────────────────
+
+async function handleBatchCopy() {
+  const startIndex = parseInt($('#batch-start-index').value) - 1;
+  const count = parseInt($('#batch-count').value);
+  const incConcept = $('#batch-col-concept').checked;
+  const incDef = $('#batch-col-def').checked;
+  const incLow = $('#batch-col-low').checked;
+
+  if (isNaN(startIndex) || startIndex < 0 || isNaN(count) || count < 1) {
+    showToast('Invalid start index or count.', 'error');
+    return;
+  }
+
+  let lines = [];
+  for (let i = startIndex; i < startIndex + count && i < STATE.prompts.length; i++) {
+    const p = STATE.prompts[i];
+    let cols = [];
+    if (incConcept) cols.push(p.concept_name || '');
+    if (incDef) cols.push(p.concept_definition || '');
+    if (incLow) cols.push(p.low_level || '');
+    lines.push(cols.join(' | '));
+  }
+
+  if (lines.length === 0) {
+    showToast('No rows to copy.', 'error');
+    return;
+  }
+
+  const text = lines.join('\n');
+  try {
+    await navigator.clipboard.writeText(text);
+    STATE.lastBatchedIndex = startIndex + lines.length + 1; // 1-indexed
+    $('#batch-start-index').value = STATE.lastBatchedIndex;
+    saveState();
+    showToast(`Copied ${lines.length} rows to clipboard ✓`, 'success');
+  } catch (err) {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    STATE.lastBatchedIndex = startIndex + lines.length + 1;
+    $('#batch-start-index').value = STATE.lastBatchedIndex;
+    saveState();
+    showToast(`Copied ${lines.length} rows to clipboard ✓`, 'success');
+  }
+}
+
+async function handleBatchConvert() {
+  const text = $('#batch-import-textarea').value.trim();
+  const summaryEl = $('#batch-import-summary');
+  const logEl = $('#batch-import-log');
+  
+  if (!text) {
+    summaryEl.textContent = 'Please paste JSON results.';
+    summaryEl.style.color = 'var(--danger)';
+    return;
+  }
+
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch (e) {
+    summaryEl.textContent = 'Invalid JSON syntax.';
+    summaryEl.style.color = 'var(--danger)';
+    return;
+  }
+
+  const results = data.results || (Array.isArray(data) ? data : null);
+  if (!results || !Array.isArray(results)) {
+    summaryEl.textContent = 'Could not find "results" array.';
+    summaryEl.style.color = 'var(--danger)';
+    return;
+  }
+
+  const sanitize = (str) => {
+    if (str === null || str === undefined) return '';
+    return String(str).replace(/\t/g, ' ').replace(/\n/g, ' ').trim();
+  };
+
+  let tsvLines = [];
+
+  results.forEach(res => {
+    let decision = '';
+    let alignment = (res.alignment || '').toLowerCase();
+    if (alignment.includes('partially')) decision = 'Discuss';
+    else if (alignment.includes('incorrect')) decision = 'Move';
+    else if (alignment.includes('correct')) decision = 'Keep';
+    
+    // Columns: Reason | Decision | Suggested low level | Issues | Confidence
+    const reason = sanitize(res.reasoning || res.Reason || res.reason);
+    const suggPath = sanitize(res.suggested_low_level || res.suggested_path || res['suggested path']);
+    const issues = sanitize(res.issue || res.issues);
+    const confidence = sanitize(res.confidence);
+
+    tsvLines.push(`${reason}\t${decision}\t${suggPath}\t${issues}\t${confidence}`);
+  });
+
+  if (tsvLines.length === 0) {
+    summaryEl.textContent = 'No results found to convert.';
+    summaryEl.style.color = 'var(--danger)';
+    return;
+  }
+
+  const tsvData = tsvLines.join('\n');
+  
+  try {
+    await navigator.clipboard.writeText(tsvData);
+    summaryEl.textContent = `Copied ${tsvLines.length} rows to clipboard!`;
+    summaryEl.style.color = 'var(--success)';
+    showToast(`Copied ${tsvLines.length} rows to clipboard ✓`, 'success');
+    logEl.innerHTML = '';
+  } catch (err) {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = tsvData;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    summaryEl.textContent = `Copied ${tsvLines.length} rows to clipboard!`;
+    summaryEl.style.color = 'var(--success)';
+    showToast(`Copied ${tsvLines.length} rows to clipboard ✓`, 'success');
+    logEl.innerHTML = '';
+  }
 }
 
 function resetProgress() {
@@ -1041,6 +1175,25 @@ function bindEvents() {
   $('#btn-close-settings').addEventListener('click', () => {
     $('#settings-dialog').close();
   });
+
+  // Batch Tools
+  const batchBtn = $('#btn-batch-tools');
+  if (batchBtn) {
+    batchBtn.addEventListener('click', () => {
+      $('#batch-start-index').value = STATE.lastBatchedIndex || 1;
+      $('#batch-tools-dialog').showModal();
+    });
+  }
+  const closeBatchBtn = $('#btn-close-batch-tools');
+  if (closeBatchBtn) {
+    closeBatchBtn.addEventListener('click', () => {
+      $('#batch-tools-dialog').close();
+    });
+  }
+  const batchCopyBtn = $('#btn-batch-copy');
+  if (batchCopyBtn) batchCopyBtn.addEventListener('click', handleBatchCopy);
+  const batchConvertBtn = $('#btn-batch-convert');
+  if (batchConvertBtn) batchConvertBtn.addEventListener('click', handleBatchConvert);
 
   // Reset
   $('#btn-reset').addEventListener('click', resetProgress);
