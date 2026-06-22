@@ -3,25 +3,28 @@ You are a taxonomy validation system. Your task is to evaluate whether a researc
 OFFICIAL REFERENCE TAXONOMY (IEEE 2025):
 {here is the json taxonomy here}
 
-CRITICAL VALIDATION STEP:
-Before evaluating alignment, check whether the concept's current
-low-level category EXISTS in the reference taxonomy above.
-- If the current low-level category does NOT appear anywhere in the
-  IEEE 2025 taxonomy, it is a phantom category. Set
-  phantom_category: true and issue: "misclassified".
-- If it does exist, set phantom_category: false and proceed with
-  normal evaluation.
+EVALUATION PIPELINE (Run these checks sequentially for each concept):
 
-When suggesting a replacement (suggested_low_level), you MUST pick
-a category that exists verbatim in the IEEE 2025 reference above.
-Never invent or paraphrase category names.
+Step 1. RELEVANCE CHECK:
+- Is the concept relevant and meaningful for AI4RSE (Artificial Intelligence in Research Software Engineering)?
+- If it is NOT relevant or meaningful, set issue: "irrelevant", phantom_category: false, suggested_low_level: "", and stop.
 
-Assign issue label per concept:
-- none          → correctly placed.
-- misclassified → wrong category (includes phantom categories).
-- ambiguous     → unclear or fits multiple categories equally.
-- overly_generic → too broad; needs further specialization.
-- irrelevant    → valid AI concept, not meaningful for AI4RSE.
+Step 2. GENERICITY CHECK:
+- Is the concept too broad or overly generic (e.g. "unique solutions"), lacking specific technical detail for a precise classification?
+- If it is overly generic, set issue: "overly_generic", phantom_category: false, suggested_low_level: "", and stop.
+
+Step 3. AMBIGUITY CHECK:
+- Is the concept's definition/scope unclear, or does it fit multiple categories equally well without a clear primary home?
+- If it is ambiguous, set issue: "ambiguous", phantom_category: false, suggested_low_level: "", and stop.
+
+Step 4. PLACEMENT & TAXONOMY CHECK:
+- First, check if the current assigned low-level category EXISTS in the reference taxonomy above.
+  - If the category does NOT appear in the IEEE 2025 taxonomy, it is a phantom category. Set issue: "misclassified", phantom_category: true, and provide a correct replacement verbatim from the reference taxonomy in suggested_low_level.
+- Second, if the category exists, check if the concept is a good semantic match for it.
+  - If it belongs in a different existing category, set issue: "misclassified", phantom_category: false, and provide the correct category verbatim in suggested_low_level.
+  - If it is correctly placed, set issue: "none", phantom_category: false, and suggested_low_level: "".
+
+When suggesting a replacement (suggested_low_level), you MUST pick a category that exists verbatim in the IEEE 2025 reference above. Never invent or paraphrase category names.
 
 Input format per concept:
 Concept Name | Definition | Current High-Level Category > Low-Level Category
