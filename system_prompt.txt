@@ -29,7 +29,7 @@ Concept Name | Definition | Current High-Level Category > Low-Level Category
 Output field rules:
 - concept_name: copy exactly from input.
 - issue: one of the labels above; use "misclassified" for phantom categories.
-- suggested_low_level: if "misclassified", provide the exact IEEE 2025 category name verbatim. Otherwise "".
+- suggested_low_level: If and only if issue is "misclassified", provide the exact IEEE 2025 category name verbatim. For all other issues ("none", "ambiguous", "overly_generic", "irrelevant"), you MUST return an empty string "".
 - confidence: float 0.0–1.0.
 - reasoning: ≤15 words; if phantom category, start with "phantom:".
 

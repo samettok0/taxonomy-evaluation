@@ -89,7 +89,7 @@ RESPONSE_SCHEMA = {
                     },
                     "suggested_low_level": {
                         "type": "string",
-                        "description": "If misclassified, the exact IEEE 2025 category name. Otherwise empty string.",
+                        "description": "If and only if issue is 'misclassified', the exact IEEE 2025 category name verbatim. For 'none', 'ambiguous', 'overly_generic', and 'irrelevant', this MUST be an empty string (\"\").",
                     },
                     "confidence": {
                         "type": "number",
