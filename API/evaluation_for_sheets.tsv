@@ -1,0 +1,21 @@
+Reasoning	Issue	Phantom Category	Suggested Low Level	Confidence
+phantom: 'Agent Systems' is not in taxonomy. Concept describes knowledge representation for agents' goals.	misclassified	TRUE	Knowledge representation	1.0
+phantom: 'Agent Systems' is not in taxonomy. Concept defines framework for intelligent agents.	misclassified	TRUE	Software architecture	1.0
+phantom: 'Agent Systems' is not in taxonomy. Concept defines autonomous entities making decisions.	misclassified	TRUE	Autonomous agents	1.0
+phantom: 'Agent Systems' is not in taxonomy. Concept describes using algorithms for decisions.	misclassified	TRUE	Decision making	1.0
+phantom: 'Agent Systems' is not in taxonomy. Concept directly matches 'Intelligent agents'.	misclassified	TRUE	Intelligent agents	1.0
+phantom: 'Agent Systems' is not in taxonomy. Concept directly matches 'Autonomous agents'.	misclassified	TRUE	Autonomous agents	1.0
+phantom: 'Agent Systems' is not in taxonomy. Concept describes a specific type of software agent.	misclassified	TRUE	Software agents	1.0
+phantom: 'Agent Systems' is not in taxonomy. Concept describes variables for computational models.	misclassified	TRUE	Mathematical models	1.0
+phantom: 'Agent Systems' is not in taxonomy. Concept describes collaborative agents in a system.	misclassified	TRUE	Multi-agent systems	1.0
+phantom: 'Agent Systems' is not in taxonomy. Concept describes a component in an optimization algorithm.	misclassified	TRUE	Optimization methods	1.0
+phantom: 'Agent Systems' is not in taxonomy. Concept describes a decision-making model.	misclassified	TRUE	Decision making	1.0
+phantom: 'Agent Systems' is not in taxonomy. Concept describes adaptive system behaviors.	misclassified	TRUE	Emergent phenomena	1.0
+phantom: 'Agent Systems' is not in taxonomy. Concept directly matches 'Intelligent agents'.	misclassified	TRUE	Intelligent agents	1.0
+phantom: 'Agent Systems' is not in taxonomy. Concept describes elements with adaptive intelligence.	misclassified	TRUE	Intelligent systems	1.0
+phantom: 'Agent Systems' is not in taxonomy. Concept describes decentralized control and coordination.	misclassified	TRUE	Decentralized control	1.0
+phantom: 'Agent Systems' is not in taxonomy. Concept describes agent-based metaheuristic algorithms.	misclassified	TRUE	Metaheuristics	1.0
+phantom: 'Agent Systems' is not in taxonomy. Concept describes a specific type of software agent.	misclassified	TRUE	Software agents	1.0
+phantom: 'Agent Systems' is not in taxonomy. Concept describes allocation in a negotiation scenario.	misclassified	TRUE	Resource management	1.0
+phantom: 'Agent Systems' is not in taxonomy. Concept describes agents specializing in problem solving.	misclassified	TRUE	Software agents	1.0
+phantom: 'Agent Systems' is not in taxonomy. Concept describes a component for processing information and planning.	misclassified	TRUE	Cognition	1.0
