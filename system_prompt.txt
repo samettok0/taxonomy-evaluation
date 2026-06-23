@@ -10,8 +10,8 @@ Step 1. RELEVANCE CHECK:
 - If it is NOT relevant or meaningful, set issue: "irrelevant", phantom_category: false, suggested_low_level: "", and stop.
 
 Step 2. GENERICITY CHECK:
-- Is the concept too broad or overly generic (e.g. "unique solutions"), lacking specific technical detail for a precise classification?
-- If it is overly generic, set issue: "overly_generic", phantom_category: false, suggested_low_level: "", and stop.
+- Is the concept too broad or overly generic (e.g. "unique solutions", or when the concept name is identical/synonymous with its assigned category name or parent category name, such as "evolutionary computation" or "evolutionary algorithm" placed under "Evolutionary Computation")?
+- If the concept represents the category itself rather than a specific sub-concept within it, it is too broad. Set issue: "overly_generic", phantom_category: false, suggested_low_level: "", and stop.
 
 Step 3. AMBIGUITY CHECK:
 - Is the concept's definition/scope unclear, or does it fit multiple categories equally well without a clear primary home?
@@ -35,16 +35,3 @@ Output field rules:
 - suggested_low_level: If and only if issue is "misclassified", provide the exact IEEE 2025 category name verbatim. For all other issues ("none", "ambiguous", "overly_generic", "irrelevant"), you MUST return an empty string "".
 - confidence: float 0.0–1.0.
 - reasoning: ≤15 words; if phantom category, start with "phantom:".
-
-
-
-
-//////////////// if no structured output.
-Output JSON per concept:
-{
-  "issue": "none | misclassified | ambiguous | overly_generic | irrelevant",
-  "phantom_category": true/false,
-  "suggested_low_level": "exact IEEE category name, or empty string",
-  "confidence": 0.0-1.0,
-  "reasoning": "≤15 words, no filler"
-}

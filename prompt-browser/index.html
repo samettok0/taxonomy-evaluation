@@ -474,8 +474,8 @@
           <!-- JSON Paste & Convert to Sheets -->
           <div class="setting-group">
             <h3>Convert JSON for Sheets</h3>
-            <p class="setting-desc">Paste raw AI JSON output. It will be converted into columns (Reason, Decision, Suggested low level, Issues, Confidence) and copied to your clipboard so you can paste it directly into Google Sheets. It will <strong>not</strong> save to progress.json.</p>
-            <textarea id="batch-import-textarea" class="response-textarea" rows="8" placeholder='{ "results": [ { "concept_name": "...", "issue": "...", ... } ] }'></textarea>
+            <p class="setting-desc">Paste raw AI JSON output. It will be converted into columns (Reasoning, Issue, Phantom Category, Suggested Low Level, Confidence) and copied to your clipboard so you can paste it directly into Google Sheets. It will <strong>not</strong> save to progress.json.</p>
+            <textarea id="batch-import-textarea" class="response-textarea" rows="8" placeholder='{ "results": [ { "concept_name": "...", "issue": "none", "phantom_category": false, "suggested_low_level": "", "confidence": 0.9, "reasoning": "..." } ] }'></textarea>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
               <button class="btn btn-primary" id="btn-batch-convert">Copy for Sheets</button>
               <span id="batch-import-summary" style="font-size: 0.85rem; font-weight: 500;"></span>

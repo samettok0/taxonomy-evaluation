@@ -944,19 +944,14 @@ async function handleBatchConvert() {
   let tsvLines = [];
 
   results.forEach(res => {
-    let decision = '';
-    let alignment = (res.alignment || '').toLowerCase();
-    if (alignment.includes('partially')) decision = 'Discuss';
-    else if (alignment.includes('incorrect')) decision = 'Move';
-    else if (alignment.includes('correct')) decision = 'Keep';
-    
-    // Columns: Reason | Decision | Suggested low level | Issues | Confidence
-    const reason = sanitize(res.reasoning || res.Reason || res.reason);
-    const suggPath = sanitize(res.suggested_low_level || res.suggested_path || res['suggested path']);
-    const issues = sanitize(res.issue || res.issues);
+    // Columns: Reasoning | Issue | Phantom Category | Suggested Low Level | Confidence
+    const reasoning = sanitize(res.reasoning);
+    const issue = sanitize(res.issue);
+    const phantom = res.phantom_category === true ? 'TRUE' : 'FALSE';
+    const suggLow = sanitize(res.suggested_low_level);
     const confidence = sanitize(res.confidence);
 
-    tsvLines.push(`${reason}\t${decision}\t${suggPath}\t${issues}\t${confidence}`);
+    tsvLines.push(`${reasoning}\t${issue}\t${phantom}\t${suggLow}\t${confidence}`);
   });
 
   if (tsvLines.length === 0) {

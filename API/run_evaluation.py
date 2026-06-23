@@ -361,9 +361,9 @@ def run_evaluation(test_mode: bool = False):
     print(f"\n📦 {len(prompts):,} concepts → {total_batches} batches of {BATCH_SIZE}")
 
     if test_mode:
-        batches = batches[:1]
-        total_batches = 1
-        print(f"   🧪 TEST MODE: Processing only batch #1 ({len(batches[0])} concepts)")
+        batches = batches[:20]
+        total_batches = len(batches)
+        print(f"   🧪 TEST MODE: Processing first {total_batches} batches ({len(prompts[:20*BATCH_SIZE])} concepts)")
 
     # 3. Set up or reuse context cache
     cache_name = find_existing_cache()
