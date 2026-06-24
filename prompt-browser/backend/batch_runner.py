@@ -22,7 +22,7 @@ batch_state = {
     "run_mode": "full",
     "cache_name": None,
 }
-batch_lock = threading.Lock()
+batch_lock = threading.RLock()
 
 def get_status():
     """Return current batch evaluation status."""
