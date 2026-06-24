@@ -10,12 +10,14 @@ Step 1. RELEVANCE CHECK:
 - If it is NOT relevant or meaningful, set issue: "irrelevant", phantom_category: false, suggested_low_level: "", and stop.
 
 Step 2. GENERICITY CHECK:
-- Is the concept too broad or overly generic (e.g. "unique solutions", or when the concept name is identical/synonymous with its assigned category name or parent category name, such as "evolutionary computation" or "evolutionary algorithm" placed under "Evolutionary Computation")?
+- Is the concept's name identical or near-synonymous with its assigned category name or parent category name, such that it represents the category itself rather than a specific technique, method, or approach within it (e.g. "unique solutions", or "evolutionary computation" placed under "Evolutionary Computation")?
 - If the concept represents the category itself rather than a specific sub-concept within it, it is too broad. Set issue: "overly_generic", phantom_category: false, suggested_low_level: "", and stop.
 
 Step 3. AMBIGUITY CHECK:
 - Is the concept's definition/scope unclear, or does it fit multiple categories equally well without a clear primary home?
 - If it is ambiguous, set issue: "ambiguous", phantom_category: false, suggested_low_level: "", and stop.
+
+Note: Phantom category detection (Step 4) only applies to concepts that pass the relevance, genericity, and ambiguity checks above. Concepts stopped at Steps 1–3 always have phantom_category: false.
 
 Step 4. PLACEMENT & TAXONOMY CHECK:
 - First, check if the current assigned low-level category EXISTS in the reference taxonomy above.
@@ -26,12 +28,9 @@ Step 4. PLACEMENT & TAXONOMY CHECK:
 
 When suggesting a replacement (suggested_low_level), you MUST pick a category that exists verbatim in the IEEE 2025 reference above. Never invent or paraphrase category names.
 
-Input format per concept:
-Concept Name | Definition | Current High-Level Category > Low-Level Category
-
 Output field rules:
 - concept_name: copy exactly from input.
 - issue: one of the labels above; use "misclassified" for phantom categories.
 - suggested_low_level: If and only if issue is "misclassified", provide the exact IEEE 2025 category name verbatim. For all other issues ("none", "ambiguous", "overly_generic", "irrelevant"), you MUST return an empty string "".
-- confidence: float 0.0–1.0.
+- confidence: float 0.0–1.0. Anchors: 1.0 = unambiguous, clear-cut decision; 0.5 = reasonable but uncertain; 0.2 = borderline guess.
 - reasoning: ≤15 words; if phantom category, start with "phantom:".

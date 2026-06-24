@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI4RSE Taxonomy — Prompt Browser</title>
-  <meta name="description" content="Browse and copy taxonomy evaluation prompts for manual AI validation">
+  <meta name="description" content="Browse, edit, test, and batch-execute taxonomy prompts via Gemini API">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -22,11 +22,11 @@
         </svg>
       </div>
       <h1>AI4RSE Taxonomy</h1>
-      <p class="loading-subtitle">Prompt Browser</p>
+      <p class="loading-subtitle">Initializing Workspace...</p>
       <div class="loading-bar-track">
         <div id="loading-bar" class="loading-bar"></div>
       </div>
-      <p id="loading-status" class="loading-status">Initializing...</p>
+      <p id="loading-status" class="loading-status">Connecting to Local DB...</p>
     </div>
   </div>
 
@@ -35,16 +35,15 @@
     <!-- Header -->
     <header class="header">
       <div class="header-left">
-        <button id="btn-back-to-list" class="btn btn-secondary hidden" style="margin-right: 15px;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="15 18 9 12 15 6"/>
-          </svg>
-          Back to List
-        </button>
         <div class="header-title">
-          <h1>AI4RSE Prompt Browser</h1>
-          <span class="header-badge" id="total-badge">0 prompts</span>
+          <h1>AI4RSE Workspace</h1>
+          <span class="header-badge" id="total-badge">0 concepts</span>
         </div>
+        <nav class="header-nav">
+          <a href="#" id="nav-browser" class="nav-link active">Concept Browser</a>
+          <a href="#" id="nav-testing" class="nav-link">Live Testing</a>
+          <a href="#" id="nav-batch" class="nav-link">Batch Dashboard</a>
+        </nav>
       </div>
       <div class="header-right">
         <div class="progress-ring-container" id="progress-ring-container" title="Overall progress">
@@ -57,7 +56,7 @@
         <div class="header-stats">
           <div class="stat" id="stat-done">
             <span class="stat-value">0</span>
-            <span class="stat-label">Done</span>
+            <span class="stat-label">Reviewed</span>
           </div>
           <div class="stat" id="stat-remaining">
             <span class="stat-value">0</span>
@@ -73,293 +72,285 @@
           </svg>
           Export CSV
         </button>
-        <button class="btn btn-secondary" id="btn-batch-tools" title="Batch Copy & Import">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-            <line x1="3" y1="9" x2="21" y2="9"/>
-            <line x1="9" y1="21" x2="9" y2="9"/>
-          </svg>
-          AI Batch Tools
-        </button>
-        <button class="btn btn-icon" id="btn-export" title="Export responses (JSON)">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
-            <polyline points="7 10 12 15 17 10"/>
-            <line x1="12" y1="15" x2="12" y2="3"/>
-          </svg>
-        </button>
-        <button class="btn btn-icon" id="btn-settings" title="Settings">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.32 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
-          </svg>
-        </button>
       </div>
     </header>
 
     <!-- Main Layout -->
     <div class="main-layout">
       
-      <!-- ================= LIST VIEW ================= -->
-      <div id="view-list" class="view-container">
-        <div class="list-filters">
-          <div class="filter-group filter-search-group">
-            <div class="search-box" id="search-box">
+      <!-- ================= BROWSER VIEW (List + Details) ================= -->
+      <div id="view-browser" class="view-container">
+        <!-- List Navigation (Left Sidebar) -->
+        <div class="tree-nav-container" style="flex: 0 0 250px; flex-direction: column;">
+            <div class="search-box" id="search-box" style="margin-bottom: 15px;">
               <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
               </svg>
-              <input type="text" id="search-input" class="search-input" placeholder="Global search... (/ to focus)" autocomplete="off" />
+              <input type="text" id="search-input" class="search-input" placeholder="Global search..." autocomplete="off" />
               <button class="search-clear hidden" id="search-clear" title="Clear search">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
                 </svg>
               </button>
-              <div class="search-dropdown hidden" id="search-dropdown">
-                <div class="search-results" id="search-results"></div>
-                <div class="search-footer" id="search-footer"></div>
-              </div>
             </div>
-          </div>
-          <div class="filter-group">
-            <label>Status:</label>
-            <select id="list-filter-status" class="decision-select">
-              <option value="all">All</option>
-              <option value="pending">Pending</option>
-              <option value="done">Done</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label>Decision:</label>
-            <select id="list-filter-decision" class="decision-select">
-              <option value="all">All</option>
-              <option value="none">No Decision</option>
-              <option value="Keep">Keep</option>
-              <option value="Move">Move</option>
-              <option value="Merge">Merge</option>
-              <option value="Remove">Remove</option>
-              <option value="Discuss">Discuss</option>
-            </select>
-          </div>
+          
+            <div class="tree-level" id="tree-high-container" style="flex: 1;">
+              <div class="tree-header">High Level</div>
+              <div class="tree-list" id="tree-high-list"></div>
+            </div>
+            <div class="tree-level" id="tree-mid-container" style="flex: 1;">
+              <div class="tree-header">Middle Level</div>
+              <div class="tree-list" id="tree-mid-list"></div>
+            </div>
+            <div class="tree-level" id="tree-low-container" style="flex: 1;">
+              <div class="tree-header">Low Level</div>
+              <div class="tree-list" id="tree-low-list"></div>
+            </div>
         </div>
         
-        <div class="tree-nav-container">
-          <div class="tree-level" id="tree-high-container">
-            <div class="tree-header">High Level</div>
-            <div class="tree-list" id="tree-high-list"></div>
-          </div>
-          <div class="tree-level" id="tree-mid-container">
-            <div class="tree-header">Middle Level</div>
-            <div class="tree-list" id="tree-mid-list">
-              <div class="tree-empty">Select High Level first</div>
+        <!-- Center List Details -->
+        <div class="table-container" style="flex: 1; display: flex; flex-direction: column;">
+          <div class="list-filters" style="margin-bottom: 10px;">
+            <div class="filter-group">
+              <label>Status:</label>
+              <select id="list-filter-status" class="decision-select">
+                <option value="all">All</option>
+                <option value="pending">Pending</option>
+                <option value="done">Done</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>Decision:</label>
+              <select id="list-filter-decision" class="decision-select">
+                <option value="all">All</option>
+                <option value="none">No Decision</option>
+                <option value="Keep">Keep</option>
+                <option value="Move">Move</option>
+                <option value="Merge">Merge</option>
+                <option value="Remove">Remove</option>
+                <option value="Discuss">Discuss</option>
+              </select>
             </div>
           </div>
-          <div class="tree-level" id="tree-low-container">
-            <div class="tree-header">Low Level</div>
-            <div class="tree-list" id="tree-low-list">
-              <div class="tree-empty">Select Middle Level first</div>
-            </div>
+          
+          <div style="flex: 1; overflow: auto; border: 1px solid var(--border-color); border-radius: 6px;">
+            <table class="data-table" id="list-table">
+              <thead>
+                <tr>
+                  <th width="80">Index</th>
+                  <th>Concept Name</th>
+                  <th>Category Path</th>
+                  <th width="100">Status</th>
+                  <th width="120">Decision</th>
+                </tr>
+              </thead>
+              <tbody id="list-table-body">
+                <!-- Rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+          <div class="list-pagination" style="margin-top: 10px;">
+            <button id="btn-page-prev" class="btn btn-secondary" disabled>← Previous</button>
+            <span id="page-info">Page 1 of ?</span>
+            <button id="btn-page-next" class="btn btn-secondary">Next →</button>
           </div>
         </div>
-        
-        <div class="table-container">
-          <table class="data-table" id="list-table">
-            <thead>
-              <tr>
-                <th width="80">Index</th>
-                <th>Concept Name</th>
-                <th>Category Path</th>
-                <th width="100">Status</th>
-                <th width="120">Decision</th>
-              </tr>
-            </thead>
-            <tbody id="list-table-body">
-              <!-- Rendered via JS -->
-            </tbody>
-          </table>
-        </div>
-        
-        <div class="list-pagination">
-          <button id="btn-page-prev" class="btn btn-secondary" disabled>← Previous</button>
-          <span id="page-info">Page 1 of ?</span>
-          <button id="btn-page-next" class="btn btn-secondary">Next →</button>
-        </div>
-      </div>
 
-      <!-- ================= PROMPT VIEW ================= -->
-      <div id="view-prompt" class="view-container hidden">
-        <!-- Navigation Bar -->
-        <div class="nav-bar">
-          <div class="nav-controls">
+        <!-- Right Side Panel (Current Concept Inspector) -->
+        <div class="inspector-panel" style="flex: 0 0 350px; background: var(--bg-secondary); border-left: 1px solid var(--border-color); padding: 15px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto;">
+          <div class="nav-controls" style="display: flex; justify-content: space-between; align-items: center;">
             <button class="btn btn-nav" id="btn-prev" title="Previous prompt (←)">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="15 18 9 12 15 6"/>
-              </svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
             </button>
             <div class="nav-index">
               <input type="number" id="nav-input" class="nav-input" min="1" max="10542" value="1" />
               <span class="nav-total">/ <span id="nav-total-display">10542</span></span>
             </div>
             <button class="btn btn-nav" id="btn-next" title="Next prompt (→)">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="9 18 15 12 9 6"/>
-              </svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
             </button>
           </div>
-          <div class="nav-actions">
 
-            <button class="btn btn-secondary" id="btn-skip-to-next-pending" title="Skip to next pending">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polygon points="5 4 15 12 5 20 5 4"/>
-                <line x1="19" y1="5" x2="19" y2="19"/>
-              </svg>
-              Next Pending
-            </button>
-            <select id="category-filter-select" class="select-filter">
-              <option value="">All Categories</option>
+          <div class="card-meta">
+            <span class="badge badge-index" id="card-index">#1</span>
+            <span class="badge badge-status" id="card-status">Pending</span>
+          </div>
+
+          <h3 id="concept-name" style="margin: 0; color: var(--text-primary); font-size: 1.1rem;">—</h3>
+          <p id="concept-definition" style="margin: 0; color: var(--text-tertiary); font-size: 0.85rem; line-height: 1.4;">—</p>
+
+          <div class="decision-section" style="padding: 15px; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px;">
+            <h4 style="margin: 0 0 10px 0; font-size: 0.9rem;">Review Decision</h4>
+            
+            <label style="display: block; font-size: 0.8rem; margin-bottom: 4px; color: var(--text-secondary);">Decision</label>
+            <select id="decision-select" class="decision-select" style="width: 100%; margin-bottom: 10px;">
+              <option value="" disabled selected>— Select —</option>
+              <option value="Keep">✓ Keep</option>
+              <option value="Move">↗ Move</option>
+              <option value="Merge">⊕ Merge</option>
+              <option value="Remove">✕ Remove</option>
+              <option value="Discuss">💬 Discuss</option>
             </select>
+
+            <label style="display: block; font-size: 0.8rem; margin-bottom: 4px; color: var(--text-secondary);">Reason</label>
+            <input type="text" id="decision-reason" class="decision-input" placeholder="Optional reasoning" style="width: 100%; margin-bottom: 10px;" />
+
+            <label style="display: block; font-size: 0.8rem; margin-bottom: 4px; color: var(--text-secondary);">Issue Taxonomy</label>
+            <select id="decision-issues" class="decision-select" style="width: 100%; margin-bottom: 10px;">
+              <option value="">— None / No Issue —</option>
+              <option value="Misclassified Concept">Misclassified Concept</option>
+              <option value="Duplicate Concept">Duplicate Concept</option>
+              <option value="Ambiguous Concept">Ambiguous Concept</option>
+              <option value="Overly Generic Concept">Overly Generic Concept</option>
+              <option value="AI4RSE Relevance Issue">AI4RSE Relevance Issue</option>
+              <option value="Other">Other</option>
+            </select>
+
+            <div id="decision-newpath-row" class="hidden">
+              <label style="display: block; font-size: 0.8rem; margin-bottom: 4px; color: var(--text-secondary);">New Path</label>
+              <input type="text" id="decision-newpath" class="decision-input" placeholder="Target path" style="width: 100%; margin-bottom: 10px;" />
+            </div>
+
+            <button class="btn btn-primary" id="btn-save-next" style="width: 100%; justify-content: center; margin-top: 10px;">Save & Next →</button>
+            <button class="btn btn-danger hidden" id="btn-mark-pending" style="width: 100%; justify-content: center; margin-top: 5px;">Reset to Pending</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= LIVE TESTING VIEW ================= -->
+      <div id="view-testing" class="view-container hidden" style="display: flex; gap: 20px; padding: 20px; overflow-y: auto;">
+        <div class="testing-left" style="flex: 1; display: flex; flex-direction: column; gap: 15px; background: var(--bg-secondary); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); height: fit-content;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0;">System Prompts</h2>
+            <button class="btn btn-secondary btn-sm" id="btn-delete-prompt">Delete Selected</button>
+          </div>
+          
+          <select id="testing-prompt-list" class="decision-select" size="6" style="width: 100%;"></select>
+          
+          <input type="text" id="testing-prompt-name" class="decision-input" placeholder="Prompt Name">
+          <textarea id="testing-prompt-content" class="response-textarea" style="height: 320px; font-family: 'JetBrains Mono', monospace;" placeholder="Enter system prompt template using {{concept_name}} tags..."></textarea>
+          
+          <div style="display: flex; gap: 10px; justify-content: space-between;">
+             <button id="btn-save-new-prompt" class="btn btn-secondary">Save as New Prompt</button>
+             <button id="btn-activate-prompt" class="btn btn-primary">Set as Active</button>
           </div>
         </div>
 
-        <!-- Prompt Card -->
-        <div class="prompt-card-wrapper">
-          <div class="prompt-card" id="prompt-card">
-            <!-- Card Header -->
-            <div class="card-header">
-              <div class="card-meta">
-                <span class="badge badge-index" id="card-index">#1</span>
-                <span class="badge badge-row" id="card-row">Row 1</span>
-                <span class="badge badge-status" id="card-status">Pending</span>
+        <div class="testing-right" style="flex: 1; display: flex; flex-direction: column; gap: 15px; background: var(--bg-secondary); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); height: fit-content;">
+          <h2 style="margin: 0;">Live Playground</h2>
+          <p style="color: var(--text-tertiary); font-size: 0.85rem; margin: 0;">Select a concept to test against using the controls below:</p>
+          
+          <div class="playground-concept-selector" style="display: flex; gap: 12px; align-items: center; background: var(--bg-primary); padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);">
+            <button class="btn btn-nav" id="btn-test-prev" title="Previous concept" style="height: 36px; padding: 0 12px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <div style="display: flex; flex-direction: column; flex: 1; min-width: 0;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                <span style="font-size: 0.75rem; color: var(--text-tertiary); font-weight: 600; text-transform: uppercase;">Concept Index:</span>
+                <input type="number" id="test-concept-input" class="nav-input" style="width: 80px; height: 26px; font-size: 0.85rem; padding: 0 5px;" min="1" max="10542" value="1" />
+                <span style="font-size: 0.75rem; color: var(--text-tertiary);">/ <span id="test-concept-total-display">10542</span></span>
               </div>
-              <div class="card-category" id="card-category">
-                <span class="crumb" id="crumb-high">—</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-                <span class="crumb" id="crumb-mid">—</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-                <span class="crumb" id="crumb-low">—</span>
-              </div>
+              <div id="test-concept-name" style="font-size: 0.95rem; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">—</div>
+              <div id="test-concept-path" style="font-size: 0.75rem; color: var(--text-tertiary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">—</div>
             </div>
-
-            <!-- Concept Info -->
-            <div class="concept-section">
-              <div class="concept-name-row">
-                <h2 class="concept-name" id="concept-name">—</h2>
-              </div>
-              <p class="concept-definition" id="concept-definition">—</p>
+            <button class="btn btn-nav" id="btn-test-next" title="Next concept" style="height: 36px; padding: 0 12px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+          
+          <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap; margin-bottom: 5px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 500;">Batch Size:</span>
+              <input type="number" id="test-concept-count" class="nav-input" style="width: 70px; height: 32px; font-size: 0.85rem; padding: 0 5px;" min="1" max="100" value="20" />
+              <span style="font-size: 0.85rem; color: var(--text-tertiary);">concepts</span>
             </div>
+            
+            <button id="btn-run-test" class="btn btn-primary" style="padding: 10px 20px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Run Playground Test
+            </button>
+          </div>
+          
+          <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 6px; padding: 15px; display: flex; flex-direction: column; height: 500px;">
+            <h4 style="margin: 0 0 10px 0;">Gemini Output (JSON)</h4>
+            <pre id="testing-result-area" style="height: 100%; overflow: auto; margin: 0; font-size: 0.85rem; color: var(--text-secondary);"></pre>
+          </div>
+          <div id="testing-tokens" style="font-size: 0.8rem; color: var(--text-tertiary); text-align: right;"></div>
+        </div>
 
-            <!-- Prompt Text -->
-            <div class="prompt-section">
-              <div class="prompt-section-header">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                  <h3>Prompt</h3>
-                  <select id="prompt-template-select" class="decision-select" style="min-width: 150px; font-size: 0.85rem; padding: 4px 8px;"></select>
-                  <button class="btn btn-icon btn-sm" id="btn-edit-templates" title="Manage Templates">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                  </button>
-                </div>
-                <button class="btn btn-copy" id="btn-copy" title="Copy prompt to clipboard">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                    <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
-                  </svg>
-                  <span class="btn-copy-label">Copy Prompt</span>
-                </button>
-              </div>
-              <pre class="prompt-text" id="prompt-text">—</pre>
+        <div class="testing-history" style="flex: 1; display: flex; flex-direction: column; gap: 15px; background: var(--bg-secondary); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); height: fit-content; max-height: calc(100vh - 120px);">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0;">Run History</h2>
+            <button class="btn btn-secondary btn-sm" id="btn-clear-history">Clear</button>
+          </div>
+          <p style="color: var(--text-tertiary); font-size: 0.85rem; margin: 0;">Recent playground test runs.</p>
+          <div id="testing-history-list" style="display: flex; flex-direction: column; gap: 10px; overflow-y: auto; flex: 1;">
+            <!-- History items populated via JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= BATCH RUN DASHBOARD ================= -->
+      <div id="view-batch" class="view-container hidden" style="padding: 20px; max-width: 1000px; margin: 0 auto; width: 100%;">
+        <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 25px;">
+          <h2 style="margin: 0 0 5px 0;">Batch Execution Dashboard</h2>
+          <p style="color: var(--text-tertiary); font-size: 0.85rem; margin-bottom: 25px;">Run evaluations in the background across all concepts.</p>
+          
+          <div style="display: flex; gap: 20px; align-items: flex-end; margin-bottom: 30px;">
+            <div style="flex: 1;">
+              <label style="display: block; font-size: 0.85rem; margin-bottom: 5px;">Active System Prompt</label>
+              <select id="batch-prompt-list" class="decision-select" style="width: 100%;"></select>
             </div>
-
-            <!-- Response Section -->
-            <div class="response-section">
-              <div class="response-header">
-                <h3>AI Response</h3>
-                <div class="response-actions">
-                  <button class="btn btn-secondary btn-sm" id="btn-paste" title="Paste from clipboard">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/>
-                      <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
-                    </svg>
-                    Paste
-                  </button>
-                  <button class="btn btn-secondary btn-sm" id="btn-clear-response" title="Clear response">
-                    Clear
-                  </button>
-                </div>
-              </div>
-              <textarea id="response-textarea" class="response-textarea" placeholder="Paste AI response here (JSON format)..." rows="6"></textarea>
+            <div style="width: 150px;">
+              <label style="display: block; font-size: 0.85rem; margin-bottom: 5px;">Limit Batches (Optional)</label>
+              <input type="number" id="batch-max-limit" class="decision-input" placeholder="e.g. 10" style="width: 100%;" />
             </div>
-
-            <!-- Decision Panel -->
-            <div class="decision-section" id="decision-section">
-              <div class="decision-header">
-                <h3>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M9 11l3 3L22 4"/>
-                    <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-                  </svg>
-                  Review Decision
-                </h3>
-              </div>
-              <div class="decision-body">
-                <div class="decision-row">
-                  <div class="decision-field">
-                    <label for="decision-select">Decision</label>
-                    <select id="decision-select" class="decision-select">
-                      <option value="" disabled selected>— Select —</option>
-                      <option value="Keep">✓ Keep</option>
-                      <option value="Move">↗ Move</option>
-                      <option value="Merge">⊕ Merge</option>
-                      <option value="Remove">✕ Remove</option>
-                      <option value="Discuss">💬 Discuss</option>
-                    </select>
-                  </div>
-                  <div class="decision-field decision-field-grow">
-                    <label for="decision-reason">Reason</label>
-                    <input type="text" id="decision-reason" class="decision-input" placeholder="e.g. Fits current category / Better fits software testing / Duplicate..." />
-                  </div>
-                </div>
-                <div class="decision-row">
-                  <div class="decision-field decision-field-grow">
-                    <label for="decision-issues">Issues</label>
-                    <select id="decision-issues" class="decision-select" style="width: 100%;">
-                      <option value="">— None / No Issue —</option>
-                      <option value="Misclassified Concept">Misclassified Concept</option>
-                      <option value="Duplicate Concept">Duplicate Concept</option>
-                      <option value="Ambiguous Concept">Ambiguous Concept</option>
-                      <option value="Overly Generic Concept">Overly Generic Concept</option>
-                      <option value="AI4RSE Relevance Issue">AI4RSE Relevance Issue</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="decision-row hidden" id="decision-newpath-row">
-                  <div class="decision-field decision-field-grow">
-                    <label for="decision-newpath">New Taxonomy Path <span class="label-hint">(for Move only)</span></label>
-                    <input type="text" id="decision-newpath" class="decision-input" placeholder="e.g. Artificial Intelligence → Machine Learning → Supervised Learning" />
-                  </div>
-                </div>
-                <div class="decision-autofill hidden" id="decision-autofill">
-                  <span class="autofill-label">AI suggests:</span>
-                  <button class="btn btn-autofill" id="btn-autofill" title="Apply AI suggestion">Apply Suggestion</button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Card Actions -->
-            <div class="card-actions">
-              <button class="btn btn-primary btn-lg" id="btn-save-next">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                Save & Next
+            <div style="display: flex; gap: 10px;">
+              <button id="btn-batch-start" class="btn btn-primary" style="padding: 10px 20px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Start Run
               </button>
-              <button class="btn btn-danger btn-lg hidden" id="btn-mark-pending" title="Mark this prompt as pending and delete any saved response">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-                  <path d="M3 3v5h5"/>
-                </svg>
-                Reset to Pending
+              <button id="btn-batch-stop" class="btn btn-danger" style="padding: 10px 20px;" disabled>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                Pause
               </button>
             </div>
+          </div>
+
+          <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+              <h3 style="margin: 0; font-size: 1rem;">Execution Progress: <span id="batch-status-text" style="color: var(--accent);">Idle</span></h3>
+              <span id="batch-progress-text" style="font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;">Batch 0 / 0</span>
+            </div>
+            <div class="loading-bar-track" style="margin-bottom: 15px;">
+              <div id="batch-progress-bar-fill" class="loading-bar" style="width: 0%;"></div>
+            </div>
+            <div style="display: flex; gap: 30px;">
+              <div class="stat">
+                <span class="stat-value" id="batch-stat-success" style="color: var(--success);">0</span>
+                <span class="stat-label">Successful Batches</span>
+              </div>
+              <div class="stat">
+                <span class="stat-value" id="batch-stat-error" style="color: var(--danger);">0</span>
+                <span class="stat-label">Failed Batches</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+              <h3 style="margin: 0; font-size: 1rem;">Overall Database Progress</h3>
+              <span id="overall-progress-text" style="font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;">Concepts Evaluated: 0 / 0 (0%)</span>
+            </div>
+            <div class="loading-bar-track" style="margin-bottom: 10px;">
+              <div id="overall-progress-bar-fill" class="loading-bar" style="width: 0%; background: var(--success);"></div>
+            </div>
+            <p style="color: var(--text-tertiary); font-size: 0.8rem; margin: 0;">This tracks the total number of concepts successfully evaluated and saved to the database for the active prompt.</p>
+          </div>
+
+          <div style="background: #000; border-radius: 8px; border: 1px solid var(--border-color); padding: 15px;">
+            <h4 style="margin: 0 0 10px 0; font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px;">Live Server Logs</h4>
+            <pre id="batch-logs" style="margin: 0; height: 300px; overflow-y: auto; color: #0f0; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; white-space: pre-wrap; line-height: 1.5;"></pre>
           </div>
         </div>
       </div>
@@ -369,124 +360,8 @@
     <div id="toast" class="toast hidden">
       <span id="toast-message"></span>
     </div>
-
-    <!-- Settings Modal -->
-    <dialog id="settings-dialog" class="modal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2>Settings</h2>
-          <button class="btn btn-icon modal-close" id="btn-close-settings">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="setting-group">
-            <h3>Data Management</h3>
-            <p class="setting-desc">Your progress is saved automatically in your browser's localStorage.</p>
-            <div class="setting-actions">
-              <button class="btn btn-secondary" id="btn-export-responses">Export All Responses (JSON)</button>
-              <button class="btn btn-secondary" id="btn-import-responses">Import Responses</button>
-              <input type="file" id="import-file" accept=".json" style="display:none">
-            </div>
-          </div>
-          <div class="setting-group">
-            <h3>Reset Progress</h3>
-            <p class="setting-desc warning-text">This will permanently delete all saved responses and progress tracking.</p>
-            <button class="btn btn-danger" id="btn-reset">Reset All Progress</button>
-          </div>
-        </div>
-      </div>
-    </dialog>
-
-    <!-- Templates Management Modal -->
-    <dialog id="templates-dialog" class="modal" style="max-width: 800px; width: 90vw;">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2>Manage Prompt Templates</h2>
-          <button class="btn btn-icon modal-close" id="btn-close-templates">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-            <!-- Left sidebar: list of templates -->
-            <div style="width: 200px; display: flex; flex-direction: column; gap: 10px; flex-grow: 1;">
-               <select id="templates-list" size="10" style="width: 100%; height: 200px; padding: 5px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary);"></select>
-               <button id="btn-new-template" class="btn btn-secondary">New Template</button>
-               <button id="btn-delete-template" class="btn btn-danger">Delete Selected</button>
-            </div>
-            <!-- Right side: editor -->
-            <div style="flex: 3; display: flex; flex-direction: column; gap: 10px; min-width: 300px;">
-               <input type="text" id="template-name" class="decision-input" placeholder="Template Name">
-               <div class="label-hint" style="font-size: 0.75rem;">Available variables: {{concept_name}}, {{concept_definition}}, {{high_level}}, {{middle_level}}, {{low_level}}</div>
-               <textarea id="template-content" class="response-textarea" style="height: 300px; font-family: 'JetBrains Mono', monospace;"></textarea>
-               <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 5px;">
-                 <span id="template-save-status" style="align-self: center; color: var(--success); font-size: 0.85rem;" class="hidden">Saved ✓</span>
-                 <button id="btn-save-template" class="btn btn-primary">Save Changes</button>
-               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </dialog>
-
-    <!-- AI Batch Tools Modal -->
-    <dialog id="batch-tools-dialog" class="modal" style="max-width: 600px; width: 90vw;">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2>AI Batch Tools</h2>
-          <button class="btn btn-icon modal-close" id="btn-close-batch-tools">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
-          </button>
-        </div>
-        <div class="modal-body" style="display: flex; flex-direction: column; gap: 20px;">
-          <!-- Batch Copy -->
-          <div class="setting-group" style="padding-bottom: 20px; border-bottom: 1px solid var(--border-color);">
-            <h3>Batch Copy</h3>
-            <p class="setting-desc">Copy rows sequentially to the clipboard in pipe-separated format.</p>
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-              <div style="display: flex; gap: 15px; align-items: center;">
-                <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" id="batch-col-concept" checked> Concept Name</label>
-                <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" id="batch-col-def" checked> Definition</label>
-                <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" id="batch-col-low" checked> Low-Level Category</label>
-              </div>
-              <div style="display: flex; gap: 15px; align-items: center; margin-top: 10px;">
-                <div class="decision-field">
-                  <label for="batch-start-index">Start Index</label>
-                  <input type="number" id="batch-start-index" class="decision-input" style="width: 100px;" value="1" min="1">
-                </div>
-                <div class="decision-field">
-                  <label for="batch-count">Rows to Copy</label>
-                  <input type="number" id="batch-count" class="decision-input" style="width: 100px;" value="30" min="1">
-                </div>
-                <div class="decision-field" style="margin-top: auto;">
-                  <button class="btn btn-primary" id="btn-batch-copy">Copy Batch</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- JSON Paste & Convert to Sheets -->
-          <div class="setting-group">
-            <h3>Convert JSON for Sheets</h3>
-            <p class="setting-desc">Paste raw AI JSON output. It will be converted into columns (Reasoning, Issue, Phantom Category, Suggested Low Level, Confidence) and copied to your clipboard so you can paste it directly into Google Sheets. It will <strong>not</strong> save to progress.json.</p>
-            <textarea id="batch-import-textarea" class="response-textarea" rows="8" placeholder='{ "results": [ { "concept_name": "...", "issue": "none", "phantom_category": false, "suggested_low_level": "", "confidence": 0.9, "reasoning": "..." } ] }'></textarea>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-              <button class="btn btn-primary" id="btn-batch-convert">Copy for Sheets</button>
-              <span id="batch-import-summary" style="font-size: 0.85rem; font-weight: 500;"></span>
-            </div>
-            <div id="batch-import-log" class="warning-text" style="font-size: 0.85rem; margin-top: 10px; max-height: 100px; overflow-y: auto;"></div>
-          </div>
-        </div>
-      </div>
-    </dialog>
   </div>
 
-  <script src="app.js"></script>
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>

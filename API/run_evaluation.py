@@ -10,7 +10,7 @@ Processes all 10,542 AI4RSE concepts through Gemini 2.5 Flash with:
 - TSV export for Google Sheets
 
 Usage:
-    # Test run (1 batch = 20 concepts)
+    # Test run (20 batches = 400 concepts)
     .venv/bin/python API/run_evaluation.py test
 
     # Full run (all concepts, auto-resumes)
@@ -45,16 +45,19 @@ SYSTEM_PROMPT_FILE = os.path.join(PROJECT_ROOT, "system_prompt.txt")
 TAXONOMY_FILE = os.path.join(PROJECT_ROOT, "taxonomy", "ieee_taxonomy.json")
 ENV_FILE = os.path.join(PROJECT_ROOT, ".env")
 
+# Load dotenv early so config can use env variables
+load_dotenv(ENV_FILE)
+
 RESULTS_JSONL = os.path.join(SCRIPT_DIR, "evaluation_results.jsonl")
 RESULTS_JSON = os.path.join(SCRIPT_DIR, "evaluation_results_all.json")
 PROGRESS_FILE = os.path.join(SCRIPT_DIR, "evaluation_progress.json")
 TSV_FILE = os.path.join(SCRIPT_DIR, "evaluation_for_sheets.tsv")
 
 # ─── Config ─────────────────────────────────────────────────────────
-MODEL = "gemini-2.5-flash"
+MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 BATCH_SIZE = 20
 DELAY_BETWEEN_REQUESTS = 2.0  # seconds
-MAX_RETRIES = 6
+MAX_RETRIES = 10  # Increased from 6 to 10 for better resilience under high demand
 BASE_DELAY = 5.0  # initial backoff delay (seconds)
 CACHE_TTL = "7200s"  # 2 hours
 CACHE_DISPLAY_NAME = "ai4rse-taxonomy-evaluation"
@@ -115,7 +118,6 @@ RESPONSE_SCHEMA = {
 }
 
 # ─── Initialize ─────────────────────────────────────────────────────
-load_dotenv(ENV_FILE)
 api_key = os.getenv("GEMINI_API")
 if not api_key:
     print("❌ GEMINI_API not found in .env file")
@@ -160,7 +162,7 @@ def build_system_instruction():
 
 
 # ─── Context Cache Management ──────────────────────────────────────
-def create_cache(system_instruction: str) -> str:
+def create_cache(system_instruction: str, test_mode: bool = False) -> str:
     """Create a context cache with the system instruction + taxonomy."""
     print(f"\n🗄️  Creating context cache (TTL: {CACHE_TTL})...")
 
@@ -176,14 +178,14 @@ def create_cache(system_instruction: str) -> str:
     print(f"   ✅ Cache created: {cache.name}")
 
     # Save cache name for resume
-    save_progress(cache_name=cache.name)
+    save_progress(test_mode=test_mode, cache_name=cache.name)
 
     return cache.name
 
 
-def find_existing_cache() -> str | None:
+def find_existing_cache(test_mode: bool = False) -> str | None:
     """Check if a valid cache already exists from a previous run."""
-    progress = load_progress()
+    progress = load_progress(test_mode=test_mode)
     cached_name = progress.get("cache_name")
 
     if cached_name:
@@ -236,31 +238,48 @@ def delete_all_caches():
 
 
 # ─── Progress Tracking ─────────────────────────────────────────────
-def load_progress() -> dict:
-    """Load progress from JSON file."""
+def load_progress(test_mode: bool = False) -> dict:
+    """Load progress from JSON file (keyed by run mode)."""
+    key = "test" if test_mode else "full"
     if os.path.exists(PROGRESS_FILE):
         with open(PROGRESS_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
+            data = json.load(f)
+        # Support legacy flat format (single-mode files) transparently
+        if key in data:
+            return data[key]
+        if "last_completed_batch" in data:
+            return data  # legacy file — return as-is for full mode only
     return {"last_completed_batch": -1, "cache_name": None, "total_batches": 0}
 
 
 def save_progress(
+    test_mode: bool = False,
     last_completed_batch: int | None = None,
     cache_name: str | None = None,
     total_batches: int | None = None,
 ):
-    """Save progress to JSON file."""
-    progress = load_progress()
+    """Save progress to JSON file (keyed by run mode)."""
+    key = "test" if test_mode else "full"
+    all_data = {}
+    if os.path.exists(PROGRESS_FILE):
+        with open(PROGRESS_FILE, "r", encoding="utf-8") as f:
+            all_data = json.load(f)
+        # Migrate legacy flat format to keyed format on first write
+        if "last_completed_batch" in all_data and key not in all_data:
+            all_data = {"full": all_data}
+
+    section = all_data.get(key, {"last_completed_batch": -1, "cache_name": None})
     if last_completed_batch is not None:
-        progress["last_completed_batch"] = last_completed_batch
+        section["last_completed_batch"] = last_completed_batch
     if cache_name is not None:
-        progress["cache_name"] = cache_name
+        section["cache_name"] = cache_name
     if total_batches is not None:
-        progress["total_batches"] = total_batches
-    progress["updated_at"] = datetime.now().isoformat()
+        section["total_batches"] = total_batches
+    section["updated_at"] = datetime.now().isoformat()
+    all_data[key] = section
 
     with open(PROGRESS_FILE, "w", encoding="utf-8") as f:
-        json.dump(progress, f, indent=2)
+        json.dump(all_data, f, indent=2)
 
 
 # ─── Batch Building ────────────────────────────────────────────────
@@ -334,7 +353,7 @@ def call_gemini(cache_name: str, user_message: str, batch_idx: int) -> dict | No
             )
 
             if is_retryable and attempt < MAX_RETRIES:
-                delay = BASE_DELAY * (2 ** (attempt - 1)) + random.uniform(0, 2)
+                delay = min(60.0, BASE_DELAY * (2 ** (attempt - 1))) + random.uniform(0, 2)
                 print(
                     f"      ⏳ Retry {attempt}/{MAX_RETRIES} for batch {batch_idx} in {delay:.1f}s... ({error_str[:80]})"
                 )
@@ -366,14 +385,14 @@ def run_evaluation(test_mode: bool = False):
         print(f"   🧪 TEST MODE: Processing first {total_batches} batches ({len(prompts[:20*BATCH_SIZE])} concepts)")
 
     # 3. Set up or reuse context cache
-    cache_name = find_existing_cache()
+    cache_name = find_existing_cache(test_mode=test_mode)
     if not cache_name:
-        cache_name = create_cache(system_instruction)
+        cache_name = create_cache(system_instruction, test_mode=test_mode)
 
-    save_progress(total_batches=total_batches)
+    save_progress(test_mode=test_mode, total_batches=total_batches)
 
     # 4. Determine where to resume from
-    progress = load_progress()
+    progress = load_progress(test_mode=test_mode)
     start_batch = progress.get("last_completed_batch", -1) + 1
 
     if start_batch > 0 and not test_mode:
@@ -460,7 +479,7 @@ def run_evaluation(test_mode: bool = False):
             print(f" ❌ FAILED")
 
         # Update progress
-        save_progress(last_completed_batch=batch_idx)
+        save_progress(test_mode=test_mode, last_completed_batch=batch_idx)
 
         # Delay between requests (skip on last batch)
         if batch_idx < len(batches) - 1:
@@ -519,6 +538,18 @@ def export_results():
     # Sort by global_index for consistent ordering
     all_results.sort(key=lambda r: r.get("global_index", 0))
 
+    # Deduplicate by global_index (guards against re-processed batches)
+    seen: set = set()
+    deduped = []
+    for r in all_results:
+        key = r.get("global_index")
+        if key not in seen:
+            seen.add(key)
+            deduped.append(r)
+    if len(deduped) < len(all_results):
+        print(f"   ⚠️  Removed {len(all_results) - len(deduped)} duplicate(s) by global_index")
+    all_results = deduped
+
     # 1. Save merged JSON
     with open(RESULTS_JSON, "w", encoding="utf-8") as f:
         json.dump(
@@ -535,19 +566,21 @@ def export_results():
     print(f"   💾 Merged JSON: {RESULTS_JSON}")
 
     # 2. Generate TSV for Google Sheets
-    # Columns: Reasoning | Issue | Phantom Category | Suggested Low Level | Confidence
+    # Columns: Original Row | Concept Name | Reasoning | Issue | Phantom Category | Suggested Low Level | Confidence
     with open(TSV_FILE, "w", encoding="utf-8") as f:
         # Header
-        f.write("Reasoning\tIssue\tPhantom Category\tSuggested Low Level\tConfidence\n")
+        f.write("Original Row\tConcept Name\tReasoning\tIssue\tPhantom Category\tSuggested Low Level\tConfidence\n")
 
         for r in all_results:
+            original_row = str(r.get("original_row", ""))
+            concept_name = (r.get("concept_name") or "").replace("\t", " ").replace("\n", " ")
             reasoning = (r.get("reasoning") or "").replace("\t", " ").replace("\n", " ")
             issue = r.get("issue", "")
             phantom = "TRUE" if r.get("phantom_category") else "FALSE"
             suggested = (r.get("suggested_low_level") or "").replace("\t", " ")
             confidence = str(r.get("confidence", ""))
 
-            f.write(f"{reasoning}\t{issue}\t{phantom}\t{suggested}\t{confidence}\n")
+            f.write(f"{original_row}\t{concept_name}\t{reasoning}\t{issue}\t{phantom}\t{suggested}\t{confidence}\n")
 
     print(f"   💾 TSV for Sheets: {TSV_FILE} ({len(all_results)} rows)")
 
