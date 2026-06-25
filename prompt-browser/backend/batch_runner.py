@@ -37,10 +37,10 @@ def stop_evaluation():
         if not batch_state["running"]:
             return False
         batch_state["should_stop"] = True
-        batch_state["logs"].append(f"[{datetime.now().strftime('%H:%M:%S')}] ⏸️ Stop requested, finishing current batch...")
+    _log("⏸️ Stop requested, finishing current batch...")
     return True
 
-def start_evaluation(system_prompt_id, run_mode="full", max_batches=None):
+def start_evaluation(system_prompt_id, run_mode="full", max_batches=None, batch_size=20):
     """Start a batch evaluation in a background thread."""
     with batch_lock:
         if batch_state["running"]:
@@ -60,16 +60,18 @@ def start_evaluation(system_prompt_id, run_mode="full", max_batches=None):
 
     thread = threading.Thread(
         target=_run_batch_evaluation,
-        args=(system_prompt_id, run_mode, max_batches),
+        args=(system_prompt_id, run_mode, max_batches, batch_size),
         daemon=True,
     )
     thread.start()
 
 def _log(msg):
+    log_str = f"[{datetime.now().strftime('%H:%M:%S')}] {msg}"
+    print(log_str, flush=True)
     with batch_lock:
-        batch_state["logs"].append(f"[{datetime.now().strftime('%H:%M:%S')}] {msg}")
+        batch_state["logs"].append(log_str)
 
-def _run_batch_evaluation(system_prompt_id, run_mode, max_batches):
+def _run_batch_evaluation(system_prompt_id, run_mode, max_batches, batch_size):
     """Background thread for batch evaluation."""
     cache_name = None
     client = None
@@ -116,8 +118,8 @@ def _run_batch_evaluation(system_prompt_id, run_mode, max_batches):
 
         # Build batches
         batches = []
-        for i in range(0, len(remaining), BATCH_SIZE):
-            batches.append(remaining[i:i + BATCH_SIZE])
+        for i in range(0, len(remaining), batch_size):
+            batches.append(remaining[i:i + batch_size])
 
         if max_batches:
             try:
@@ -135,22 +137,36 @@ def _run_batch_evaluation(system_prompt_id, run_mode, max_batches):
 
         # Create context cache
         _log(f"🗄️ Creating context cache (TTL: {CACHE_TTL})...")
-        try:
-            cache = client.caches.create(
-                model=MODEL,
-                config=types.CreateCachedContentConfig(
-                    display_name=CACHE_DISPLAY_NAME,
-                    system_instruction=system_instruction,
-                    ttl=CACHE_TTL,
-                ),
-            )
-            cache_name = cache.name
-            with batch_lock:
-                batch_state["cache_name"] = cache_name
-            _log(f"   ✅ Cache created: {cache_name}")
-        except Exception as e:
-            _log(f"   ⚠️ Cache creation failed: {e}. Using direct system instruction.")
-            cache_name = None
+        cache_name = None
+        for attempt in range(1, MAX_RETRIES + 1):
+            try:
+                cache = client.caches.create(
+                    model=MODEL,
+                    config=types.CreateCachedContentConfig(
+                        display_name=CACHE_DISPLAY_NAME,
+                        system_instruction=system_instruction,
+                        ttl=CACHE_TTL,
+                    ),
+                )
+                cache_name = cache.name
+                with batch_lock:
+                    batch_state["cache_name"] = cache_name
+                _log(f"   ✅ Cache created: {cache_name}")
+                break
+            except Exception as e:
+                error_str = str(e)
+                is_retryable = any(
+                    code in error_str
+                    for code in ["429", "503", "500", "403", "RESOURCE_EXHAUSTED", "UNAVAILABLE", "INTERNAL"]
+                )
+                if is_retryable and attempt < MAX_RETRIES:
+                    delay = min(60.0, BASE_DELAY * (2 ** (attempt - 1))) + random.uniform(0, 2)
+                    clean_error = error_str.replace('\n', ' ')
+                    _log(f"   ⚠️ Cache creation failed (Retry {attempt}/{MAX_RETRIES} in {delay:.1f}s): {clean_error[:100]}")
+                    time.sleep(delay)
+                else:
+                    _log(f"   ❌ Cache creation failed after {attempt} attempts: {e}. Aborting evaluation to prevent high costs.")
+                    return
 
         # Process batches
         for batch_idx, batch in enumerate(batches):
@@ -198,7 +214,7 @@ def _run_batch_evaluation(system_prompt_id, run_mode, max_batches):
                     error_str = str(e)
                     is_retryable = any(
                         code in error_str
-                        for code in ["429", "503", "500", "RESOURCE_EXHAUSTED", "UNAVAILABLE", "INTERNAL"]
+                        for code in ["429", "503", "500", "403", "RESOURCE_EXHAUSTED", "UNAVAILABLE", "INTERNAL"]
                     )
                     if is_retryable and attempt < MAX_RETRIES:
                         delay = min(60.0, BASE_DELAY * (2 ** (attempt - 1))) + random.uniform(0, 2)
@@ -254,7 +270,20 @@ def _run_batch_evaluation(system_prompt_id, run_mode, max_batches):
                     iss = r.get("issue", "?")
                     issues[iss] = issues.get(iss, 0) + 1
                 summary = " | ".join(f"{k}:{v}" for k, v in sorted(issues.items()))
-                _log(f"      ✅ {len(result['results'])} results [{summary}]")
+                
+                token_str = ""
+                if hasattr(response, "usage_metadata") and response.usage_metadata:
+                    um = response.usage_metadata
+                    cached = getattr(um, "cached_content_token_count", 0) or 0
+                    prompt = getattr(um, "prompt_token_count", 0) or 0
+                    out_tok = getattr(um, "candidates_token_count", 0) or 0
+                    if cached > 0:
+                        new_tokens = max(0, prompt - cached)
+                        token_str = f" [Tokens: {cached} cached | {new_tokens} new | {out_tok} out]"
+                    else:
+                        token_str = f" [Tokens: 0 cached | {prompt} new | {out_tok} out]"
+
+                _log(f"      ✅ {len(result['results'])} results [{summary}]{token_str}")
 
                 with batch_lock:
                     batch_state["success_count"] += 1

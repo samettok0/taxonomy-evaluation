@@ -51,16 +51,32 @@ def evaluate_range(concept_index, count, system_prompt_id):
     client = get_gemini_client()
     from google.genai import types
 
-    response = client.models.generate_content(
-        model=MODEL,
-        contents=user_message,
-        config=types.GenerateContentConfig(
-            system_instruction=system_instruction,
-            response_mime_type="application/json",
-            response_schema=RESPONSE_SCHEMA,
-            temperature=0.1,
-        ),
-    )
+    response = None
+    import time
+    import random
+    for attempt in range(1, 4):
+        try:
+            response = client.models.generate_content(
+                model=MODEL,
+                contents=user_message,
+                config=types.GenerateContentConfig(
+                    system_instruction=system_instruction,
+                    response_mime_type="application/json",
+                    response_schema=RESPONSE_SCHEMA,
+                    temperature=0.1,
+                ),
+            )
+            break
+        except Exception as e:
+            error_str = str(e)
+            is_retryable = any(
+                code in error_str
+                for code in ["429", "503", "500", "403", "RESOURCE_EXHAUSTED", "UNAVAILABLE", "INTERNAL"]
+            )
+            if is_retryable and attempt < 3:
+                time.sleep(2.0 * attempt + random.uniform(0, 1))
+            else:
+                raise
 
     result = json.loads(response.text)
 

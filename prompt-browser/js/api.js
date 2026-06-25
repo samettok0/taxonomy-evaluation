@@ -63,14 +63,15 @@ export async function getEvalStatus() {
   return await res.json();
 }
 
-export async function startBatchEvaluation(systemPromptId, runMode = 'full', maxBatches = null) {
+export async function startBatchEvaluation(systemPromptId, runMode = 'full', maxBatches = null, batchSize = 20) {
   const res = await fetch('/api/evaluation/start', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       system_prompt_id: systemPromptId,
       run_mode: runMode,
-      max_batches: maxBatches
+      max_batches: maxBatches,
+      batch_size: batchSize
     })
   });
   if (!res.ok) {

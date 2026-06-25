@@ -28,7 +28,7 @@ except ImportError:
 # ─── Gemini Model ───────────────────────────────────────────────────
 MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 BATCH_SIZE = 20
-DELAY_BETWEEN_REQUESTS = 2.0
+DELAY_BETWEEN_REQUESTS = 5.0
 MAX_RETRIES = 10  # Increased from 6 to 10 for better resilience under high demand
 BASE_DELAY = 5.0
 CACHE_TTL = "7200s"

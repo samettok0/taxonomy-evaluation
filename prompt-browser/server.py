@@ -23,6 +23,14 @@ if not os.path.exists(DB_FILE):
 
 app = FastAPI(title="AI4RSE Prompt Browser API")
 
+@app.middleware("http")
+async def add_no_cache_header(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
+
 # --- Pydantic Models ---
 
 class SaveStateRequest(BaseModel):
@@ -45,6 +53,7 @@ class EvalStartRequest(BaseModel):
     system_prompt_id: int
     run_mode: str = "full"
     max_batches: Optional[int] = None
+    batch_size: Optional[int] = 20
 
 class ExportCsvRequest(BaseModel):
     prompts: List[Dict[str, Any]] = []
@@ -125,7 +134,7 @@ def evaluate_single(req: EvaluateSingleRequest):
 @app.post("/api/evaluation/start")
 def eval_start(req: EvalStartRequest):
     try:
-        batch_runner.start_evaluation(req.system_prompt_id, req.run_mode, req.max_batches)
+        batch_runner.start_evaluation(req.system_prompt_id, req.run_mode, req.max_batches, req.batch_size)
         return {"status": "started", "run_mode": req.run_mode}
     except RuntimeError as e:
         raise HTTPException(status_code=409, detail=str(e))

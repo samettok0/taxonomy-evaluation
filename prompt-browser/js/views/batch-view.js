@@ -71,6 +71,8 @@ async function handleStartBatch() {
   const promptId = $('#batch-prompt-list')?.value;
   const maxBatchesRaw = $('#batch-max-limit')?.value;
   const maxBatches = maxBatchesRaw ? parseInt(maxBatchesRaw) : null;
+  const batchSizeRaw = $('#batch-size')?.value;
+  const batchSize = batchSizeRaw ? parseInt(batchSizeRaw) : 20;
   
   if (!promptId) {
     showToast('Select a system prompt first', 'error');
@@ -78,7 +80,7 @@ async function handleStartBatch() {
   }
   
   try {
-    await startBatchEvaluation(promptId, 'full', maxBatches);
+    await startBatchEvaluation(promptId, 'full', maxBatches, batchSize);
     showToast('Batch evaluation started!', 'success');
     updateStatusUI(); // immediate refresh
   } catch (e) {
