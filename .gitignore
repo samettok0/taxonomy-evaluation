@@ -216,3 +216,16 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# macOS
+.DS_Store
+
+# Repository generated files and reports
+API/evaluation_*.tsv
+API/evaluation_*.json
+API/evaluation_*.jsonl
+prompt-browser/*_state.json
+prompt-browser/*_input.jsonl
+prompt-browser/compare_*.tsv
+prompt-browser/sheet_paste_*.tsv
+reports/model-selection-report.*
