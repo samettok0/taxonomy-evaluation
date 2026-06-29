@@ -291,7 +291,7 @@
       </div>
 
       <!-- ================= BATCH RUN DASHBOARD ================= -->
-      <div id="view-batch" class="view-container hidden" style="padding: 20px; max-width: 1000px; margin: 0 auto; width: 100%;">
+      <div id="view-batch" class="view-container hidden" style="padding: 20px; max-width: 1000px; margin: 0 auto; width: 100%; overflow-y: auto;">
         <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; padding: 25px;">
           <h2 style="margin: 0 0 5px 0;">Batch Execution Dashboard</h2>
           <p style="color: var(--text-tertiary); font-size: 0.85rem; margin-bottom: 25px;">Run evaluations in the background across all concepts.</p>
@@ -355,6 +355,46 @@
               <div id="overall-progress-bar-fill" class="loading-bar" style="width: 0%; background: var(--success);"></div>
             </div>
             <p style="color: var(--text-tertiary); font-size: 0.8rem; margin: 0;">This tracks the total number of concepts successfully evaluated and saved to the database for the active prompt.</p>
+          </div>
+
+          <!-- Evaluation Results Viewer -->
+          <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 12px; flex-wrap: wrap;">
+              <h3 style="margin: 0; font-size: 1rem;">Evaluation Results</h3>
+              <div style="display: flex; gap: 10px; align-items: center;">
+                <input type="text" id="results-search" class="decision-input" placeholder="Search concept…" style="width: 160px; height: 32px; font-size: 0.85rem;" />
+                <select id="results-filter-issue" class="decision-select" style="height: 32px; font-size: 0.85rem;">
+                  <option value="all">All issues</option>
+                  <option value="none">none</option>
+                  <option value="misclassified">misclassified</option>
+                  <option value="ambiguous">ambiguous</option>
+                  <option value="overly_generic">overly_generic</option>
+                  <option value="irrelevant">irrelevant</option>
+                  <option value="phantom">phantom only</option>
+                </select>
+                <button id="btn-load-results" class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.85rem;">Refresh</button>
+              </div>
+            </div>
+            <div id="results-summary" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; font-size: 0.78rem;"></div>
+            <div style="max-height: 420px; overflow: auto; border: 1px solid var(--border-color); border-radius: 6px;">
+              <table class="data-table" id="results-table">
+                <thead>
+                  <tr>
+                    <th width="60">Idx</th>
+                    <th>Concept</th>
+                    <th width="120">Issue</th>
+                    <th width="55">Phantom</th>
+                    <th>Suggested Low-Level</th>
+                    <th width="55">Conf.</th>
+                    <th>Reasoning</th>
+                  </tr>
+                </thead>
+                <tbody id="results-table-body">
+                  <tr><td colspan="7" style="text-align: center; color: var(--text-tertiary); padding: 20px;">Select a prompt above and click Refresh to view results.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p id="results-count-note" style="color: var(--text-tertiary); font-size: 0.78rem; margin: 8px 0 0 0;"></p>
           </div>
 
           <div style="background: #000; border-radius: 8px; border: 1px solid var(--border-color); padding: 15px;">
