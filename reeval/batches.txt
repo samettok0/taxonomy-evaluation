@@ -1,0 +1,1306 @@
+==================== BATCH 1 / 13  (20 concepts) ====================
+[
+ {
+  "concept_name": "genetic algorithms",
+  "definition": "A method of solving optimization and search problems based on the principles of natural selection and genetics. It involves creating a population of candidate solutions, evaluating their fitness, and using genetic operators such as mutation and crossover to evolve better solutions over generations.",
+  "current_low_level": "Evolutionary computation"
+ },
+ {
+  "concept_name": "genetic programming",
+  "definition": "A technique in computer science that uses the principles of natural selection and genetics to evolve computer programs that perform a specific task or solve a problem.",
+  "current_low_level": "Evolutionary computation"
+ },
+ {
+  "concept_name": "fuzzy control",
+  "definition": "A control strategy based on fuzzy set theory that uses linguistic variables and fuzzy logic to optimize system performance.",
+  "current_low_level": "Fuzzy systems"
+ },
+ {
+  "concept_name": "fuzzy logic",
+  "definition": "a form of many-valued logic in which the truth values of variables may be any real number between 0 and 1",
+  "current_low_level": "Fuzzy systems"
+ },
+ {
+  "concept_name": "particle swarm optimization",
+  "definition": "Particle swarm optimization (PSO) is a population-based stochastic optimization algorithm inspired by the social behavior of birds flocking or fish schooling. In PSO, a group of candidate solutions, called particles, move through the search space to find the optimal solution by adjusting their positions based on their own best known position and the global best known position.",
+  "current_low_level": "Swarm intelligence"
+ },
+ {
+  "concept_name": "formal languages",
+  "definition": "Formal languages are languages that are defined by a specific set of rules and symbols, often used in the study of theoretical computer science and linguistics.",
+  "current_low_level": "Automata Theory"
+ },
+ {
+  "concept_name": "computational efficiency",
+  "definition": "The ability of a system or algorithm to perform computations in an effective and timely manner, often measured in terms of time and resource requirements.",
+  "current_low_level": "Computational complexity"
+ },
+ {
+  "concept_name": "dynamic programming",
+  "definition": "a method for solving complex problems by breaking them down into simpler subproblems and storing the results of subproblems to avoid redundant computations",
+  "current_low_level": "Data Structures and Algorithms"
+ },
+ {
+  "concept_name": "greedy algorithms",
+  "definition": "Greedy algorithms are algorithms that make the locally optimal choice at each step with the hope of finding a global optimum solution.",
+  "current_low_level": "Data Structures and Algorithms"
+ },
+ {
+  "concept_name": "hash functions",
+  "definition": "Hash functions are algorithms that take an input (or 'message') and return a fixed-size string of bytes. They are commonly used in computer science for various purposes, such as data retrieval, data storage, and security applications.",
+  "current_low_level": "Data Structures and Algorithms"
+ },
+ {
+  "concept_name": "procedural generation",
+  "definition": "the process of creating content algorithmically rather than manually, often used in video game development to generate levels, environments, or other content",
+  "current_low_level": "Data Structures and Algorithms"
+ },
+ {
+  "concept_name": "knowledge engineering",
+  "definition": "Knowledge engineering is a field of artificial intelligence that involves the development of systems that can reason and make decisions based on knowledge.",
+  "current_low_level": "Knowledge-Based Systems"
+ },
+ {
+  "concept_name": "image analysis",
+  "definition": "The process of extracting meaningful information from images through various techniques such as segmentation, feature extraction, and pattern recognition.",
+  "current_low_level": ""
+ },
+ {
+  "concept_name": "image segmentation",
+  "definition": "Image segmentation is the process of partitioning a digital image into multiple segments to simplify the representation of an image or to locate objects and boundaries within an image.",
+  "current_low_level": ""
+ },
+ {
+  "concept_name": "computer vision",
+  "definition": "Computer vision is a field of artificial intelligence that enables computers to interpret and understand the visual world through image and video processing.",
+  "current_low_level": "Computer Vision Fundamentals"
+ },
+ {
+  "concept_name": "image enhancement",
+  "definition": "The process of improving the quality or appearance of an image through various techniques such as afï¿½ï¿½ï¿½ne transform, information removal, image fusion, and generative adversarial network",
+  "current_low_level": "Image Processing Outputs"
+ },
+ {
+  "concept_name": "image fusion",
+  "definition": "Image fusion is the process of combining multiple images of the same scene or object to create a single image that contains the most relevant information from each input image.",
+  "current_low_level": "Image Processing Outputs"
+ },
+ {
+  "concept_name": "brightness",
+  "definition": "The amount of light or luminance present in an image, which can affect the performance of deep learning algorithms in image processing tasks.",
+  "current_low_level": "Image Properties"
+ },
+ {
+  "concept_name": "spatial resolution",
+  "definition": "Spatial resolution refers to the level of detail that can be seen in an image or visual representation, typically measured in pixels or units of distance. In the context of convolutional neural networks, maintaining spatial resolution involves preserving the size and detail of the input data throughout the network layers.",
+  "current_low_level": "Image Properties"
+ },
+ {
+  "concept_name": "instance segmentation",
+  "definition": "Instance segmentation is a computer vision task that involves detecting and segmenting individual objects within an image, assigning each pixel in the image to a specific object instance.",
+  "current_low_level": "Image segmentation"
+ }
+]
+
+==================== BATCH 2 / 13  (20 concepts) ====================
+[
+ {
+  "concept_name": "object segmentation",
+  "definition": "Object segmentation is the process of identifying and delineating objects within an image or video, typically using deep learning techniques like Convolutional Neural Networks (CNNs) to improve accuracy and reliability.",
+  "current_low_level": "Image segmentation"
+ },
+ {
+  "concept_name": "semantic segmentation",
+  "definition": "Semantic segmentation is the process of classifying each pixel in an image into a particular class, such as object, background, or specific object categories.",
+  "current_low_level": "Image segmentation"
+ },
+ {
+  "concept_name": "optical flow",
+  "definition": "a mathematical description of how motion in subsequent frames can be described as densely computed flow vectors for all pixels",
+  "current_low_level": "Motion analysis"
+ },
+ {
+  "concept_name": "data mining",
+  "definition": "the process of discovering patterns in large data sets involving methods at the intersection of machine learning, statistics, and database systems",
+  "current_low_level": "Analysis Techniques"
+ },
+ {
+  "concept_name": "knowledge discovery",
+  "definition": "The process of extracting useful knowledge from data, often involving data mining and machine learning techniques to uncover patterns, trends, and insights.",
+  "current_low_level": "Analysis Techniques"
+ },
+ {
+  "concept_name": "text analysis",
+  "definition": "the process of analyzing and making sense of large datasets of text to understand and validate patterns",
+  "current_low_level": "Analysis Techniques"
+ },
+ {
+  "concept_name": "text mining",
+  "definition": "the process of extracting useful information from large amounts of unstructured text data",
+  "current_low_level": "Analysis Techniques"
+ },
+ {
+  "concept_name": "data augmentation",
+  "definition": "a technique used to artificially increase the size of a dataset by creating modified versions of existing data samples",
+  "current_low_level": "Data preprocessing"
+ },
+ {
+  "concept_name": "standardization",
+  "definition": "Standardization is a data pre-processing operation that scales the data to the same interval and range to alleviate the impact of differences in scale, features, and distribution on the model. It ensures dimensional consistency and equal weight of each attribute in distance measurement.",
+  "current_low_level": "Data preprocessing"
+ },
+ {
+  "concept_name": "linked data",
+  "definition": "Structured data that is interlinked and can be accessed and queried across different sources and domains.",
+  "current_low_level": "Data Types"
+ },
+ {
+  "concept_name": "feature extraction",
+  "definition": "The process of automatically selecting and transforming relevant features from raw data to be used for further analysis or processing in machine learning algorithms.",
+  "current_low_level": "Feature Engineering"
+ },
+ {
+  "concept_name": "context modeling",
+  "definition": "the process of representing and capturing contextual information in a structured manner for usage learning and adaptation in pervasive computing systems",
+  "current_low_level": "Adaptive Interfaces"
+ },
+ {
+  "concept_name": "augmented reality",
+  "definition": "Augmented reality (AR) is a technology that superimposes a computer-generated image on a user's view of the real world, providing a composite view.",
+  "current_low_level": "Virtual Environments"
+ },
+ {
+  "concept_name": "virtual reality",
+  "definition": "a simulated experience that can be similar to or completely different from the real world, created using computer technology",
+  "current_low_level": "Virtual Environments"
+ },
+ {
+  "concept_name": "robustness",
+  "definition": "the ability of a system to maintain its performance under variations in input or conditions",
+  "current_low_level": "Adversarial Robustness"
+ },
+ {
+  "concept_name": "adaptive algorithms",
+  "definition": "Algorithms that can adjust their detection thresholds based on real-time data to improve accuracy and mitigate the effects of false positives and negatives.",
+  "current_low_level": "Anomaly detection"
+ },
+ {
+  "concept_name": "human activity recognition",
+  "definition": "The process of identifying and classifying human activities based on data collected from sensors or other sources, often used in applications such as health monitoring, security systems, and sports analytics.",
+  "current_low_level": "Applied Machine Learning"
+ },
+ {
+  "concept_name": "pattern recognition",
+  "definition": "The process of identifying patterns or regularities in data or images, often used in fields such as computer vision and machine learning.",
+  "current_low_level": "Applied Machine Learning"
+ },
+ {
+  "concept_name": "predictive models",
+  "definition": "Models that use historical data to predict future outcomes or trends, often used in healthcare for personalized treatment recommendations and prognosis predictions.",
+  "current_low_level": "Applied Machine Learning"
+ },
+ {
+  "concept_name": "prototypes",
+  "definition": "In the context of summarizing datasets, prototypes refer to a small number of typical samples that provide a quick overview of the wider dataset. These prototypes are learned by the network as representations of prototypical activation patterns in a region of the input image.",
+  "current_low_level": "Case-based Reasoning"
+ }
+]
+
+==================== BATCH 3 / 13  (20 concepts) ====================
+[
+ {
+  "concept_name": "concept drift",
+  "definition": "Concept drift refers to the phenomenon where the statistical properties of the target variable, which the model is trying to predict, change over time in unforeseen ways, leading to a decrease in the model's performance.",
+  "current_low_level": "Continual Learning"
+ },
+ {
+  "concept_name": "knowledge transfer",
+  "definition": "The process of transferring knowledge or information from one domain or task to another, typically to improve performance or efficiency in the target domain or task.",
+  "current_low_level": "Domain Adaptation"
+ },
+ {
+  "concept_name": "transfer learning",
+  "definition": "Transfer learning is a machine learning technique where a model trained on one task is re-purposed on a second related task, typically resulting in faster training and improved performance.",
+  "current_low_level": "Domain Adaptation"
+ },
+ {
+  "concept_name": "random forests",
+  "definition": "Random Forests is a machine learning algorithm that uses a technique called ensemble learning for classification and regression tasks. It builds multiple decision trees during training and outputs the mode of the classes for classification or mean prediction for regression.",
+  "current_low_level": "Ensemble learning"
+ },
+ {
+  "concept_name": "spectral analysis",
+  "definition": "A technique used in manifold learning to evaluate features based on similarities among objects.",
+  "current_low_level": "Feature Engineering"
+ },
+ {
+  "concept_name": "message passing",
+  "definition": "The process of passing the state of each node along the edges of a graph in graph neural networks, inspired by convolutional neural networks, recurrent neural networks, and graph theory concepts.",
+  "current_low_level": "Graph Learning"
+ },
+ {
+  "concept_name": "neural architecture search",
+  "definition": "A technique that automates the design space exploration for neural network architectures, often using algorithms to search for optimal network structures and hyperparameters.",
+  "current_low_level": "ML Engineering"
+ },
+ {
+  "concept_name": "cost function",
+  "definition": "A function that assigns a cost value to elements in a set, typically used in optimization problems to determine the most efficient solution.",
+  "current_low_level": "ML Theory"
+ },
+ {
+  "concept_name": "graphical models",
+  "definition": "A graphical representation of the conditional independence relationships between variables in a probabilistic model.",
+  "current_low_level": "ML Theory"
+ },
+ {
+  "concept_name": "statistical learning",
+  "definition": "Statistical learning refers to a set of tools for modeling and understanding complex datasets. It involves the use of statistical methods and algorithms to extract patterns and insights from data, and make predictions or decisions based on those patterns.",
+  "current_low_level": "ML Theory"
+ },
+ {
+  "concept_name": "convergence",
+  "definition": "The process by which a machine learning model's loss function decreases and the model's performance stabilizes as it learns from the training data.",
+  "current_low_level": "Model Training Optimizers"
+ },
+ {
+  "concept_name": "architecture",
+  "definition": "In the context of this text, architecture refers to the overall structure and design of a Convolutional Neural Network (CNN) used for tasks such as visual perception and intrusion detection. It includes details such as the number of layers, activation functions, and classification methods utilized in the network.",
+  "current_low_level": "Neural networks"
+ },
+ {
+  "concept_name": "backpropagation",
+  "definition": "a specific technical concept in machine learning where the error in the output of a neural network is calculated and then propagated back through the network to adjust the weights and biases in order to minimize the error",
+  "current_low_level": "Neural networks"
+ },
+ {
+  "concept_name": "convolutional neural networks",
+  "definition": "A type of neural network designed for processing structured grid data, such as images, by using convolutional layers to detect features at different spatial locations.",
+  "current_low_level": "Neural networks"
+ },
+ {
+  "concept_name": "deep architecture",
+  "definition": "A technical concept referring to the design of neural networks with multiple layers, allowing for the extraction of intricate features from data and learning optimal representations for specific tasks.",
+  "current_low_level": "Neural networks"
+ },
+ {
+  "concept_name": "diffusion models",
+  "definition": "Models that generate images through a gradual denoising process, starting from random noise and requiring hundreds or even thousands of iterations.",
+  "current_low_level": "Neural networks"
+ },
+ {
+  "concept_name": "foundation models",
+  "definition": "models that can be adapted to a wide range of downstream tasks",
+  "current_low_level": "Neural networks"
+ },
+ {
+  "concept_name": "multilayer perceptrons",
+  "definition": "A type of artificial neural network composed of multiple layers of nodes, where each node in one layer is connected to every node in the next layer, allowing for complex nonlinear relationships to be learned.",
+  "current_low_level": "Neural networks"
+ },
+ {
+  "concept_name": "topology",
+  "definition": "The arrangement of the nodes and connections in a neural network model.",
+  "current_low_level": "Neural networks"
+ },
+ {
+  "concept_name": "transformers",
+  "definition": "Transformers refer to a type of deep learning model that has been shown to be highly effective in natural language processing tasks, such as text mining and language translation. One of the most well-known transformer models is BERT (Bidirectional Encoder Representations from Transformers).",
+  "current_low_level": "Neural networks"
+ }
+]
+
+==================== BATCH 4 / 13  (20 concepts) ====================
+[
+ {
+  "concept_name": "deep reinforcement learning",
+  "definition": "A type of machine learning technique that combines reinforcement learning with deep learning, utilizing deep neural networks to approximate the Q-function and manage high-dimensional state spaces.",
+  "current_low_level": "Reinforcement learning"
+ },
+ {
+  "concept_name": "autoencoders",
+  "definition": "Neural networks that reduce dimensionality and/or noise from different types of data by combining an encoder and a decoder network.",
+  "current_low_level": "Representation learning"
+ },
+ {
+  "concept_name": "self-supervised learning",
+  "definition": "Self-supervised learning is a type of machine learning technique where a model learns to predict some part of its input data as a form of supervision, without requiring labeled data.",
+  "current_low_level": "Representation learning"
+ },
+ {
+  "concept_name": "classification algorithms",
+  "definition": "A set of algorithms used to categorize data into different classes or categories based on certain features or attributes.",
+  "current_low_level": "Supervised learning"
+ },
+ {
+  "concept_name": "linear discriminant analysis",
+  "definition": "a method used in statistics, pattern recognition, and machine learning to find a linear combination of features that characterizes or separates two or more classes of objects or events",
+  "current_low_level": "Supervised learning"
+ },
+ {
+  "concept_name": "affinity propagation",
+  "definition": "A clustering algorithm based on 'message passing' between data points represented as connected nodes on a bipartite graph, in which edges represent the similarity between pairs of points.",
+  "current_low_level": "Unsupervised learning"
+ },
+ {
+  "concept_name": "dimensionality reduction",
+  "definition": "Dimensionality reduction is the process of reducing the number of random variables under consideration by obtaining a set of principal variables. It can be used to simplify data analysis, visualization, and interpretation by reducing the complexity of high-dimensional data while preserving important information.",
+  "current_low_level": "Unsupervised learning"
+ },
+ {
+  "concept_name": "gaussian mixture model",
+  "definition": "A probabilistic model that assumes all data points are generated from a mixture of several Gaussian distributions with unknown parameters. It is commonly used for clustering and density estimation tasks.",
+  "current_low_level": "Unsupervised learning"
+ },
+ {
+  "concept_name": "computational linguistics",
+  "definition": "the interdisciplinary field dealing with the statistical and/or rule-based modeling of natural language from a computational perspective",
+  "current_low_level": "Domain-Specific NLP"
+ },
+ {
+  "concept_name": "natural language processing",
+  "definition": "Natural language processing (NLP) is a subfield of artificial intelligence that focuses on the interaction between computers and humans using natural language. It involves the development of algorithms and models to enable computers to understand, interpret, and generate human language.",
+  "current_low_level": "Domain-Specific NLP"
+ },
+ {
+  "concept_name": "event detection",
+  "definition": "The process of identifying and extracting events from social message texts in real-time.",
+  "current_low_level": "Information Extraction"
+ },
+ {
+  "concept_name": "reverse engineering",
+  "definition": "Infer suitable prompt contents from a target example.",
+  "current_low_level": "Prompting"
+ },
+ {
+  "concept_name": "semantics",
+  "definition": "the branch of linguistics and logic concerned with meaning",
+  "current_low_level": "Semantic Representation"
+ },
+ {
+  "concept_name": "text summarization",
+  "definition": "Text summarization is the process of creating a concise and coherent summary of a larger text document, while retaining the most important information and key points.",
+  "current_low_level": "Text Generation"
+ },
+ {
+  "concept_name": "tokenization",
+  "definition": "The process of breaking a text into individual words or tokens.",
+  "current_low_level": "Tokenization"
+ },
+ {
+  "concept_name": "autonomous driving",
+  "definition": "A technology that allows a vehicle to operate without human intervention, typically using sensors, cameras, and artificial intelligence algorithms to navigate and make decisions on the road.",
+  "current_low_level": "Autonomous vehicles"
+ },
+ {
+  "concept_name": "motion planning",
+  "definition": "the process of determining a sequence of valid configurations that a robot must go through in order to reach a desired goal state while avoiding obstacles and adhering to constraints",
+  "current_low_level": "Motion planning"
+ },
+ {
+  "concept_name": "path planning",
+  "definition": "The process of determining a sequence of actions for a robot or vehicle to navigate from a starting point to a goal while avoiding obstacles and optimizing certain criteria such as distance or time.",
+  "current_low_level": "Motion planning"
+ },
+ {
+  "concept_name": "actuators",
+  "definition": "devices that convert energy into mechanical motion or physical movement in a system, such as motors or hydraulic pistons in robotics",
+  "current_low_level": "Robot Components"
+ },
+ {
+  "concept_name": "wheels",
+  "definition": "circular objects attached to a robot that enable it to move on the ground",
+  "current_low_level": "Robot Components"
+ }
+]
+
+==================== BATCH 5 / 13  (20 concepts) ====================
+[
+ {
+  "concept_name": "motion control",
+  "definition": "The process of regulating and coordinating the movement of a robotic system or manipulator to perform specific tasks or follow desired trajectories.",
+  "current_low_level": "Robot control"
+ },
+ {
+  "concept_name": "industrial robots",
+  "definition": "Robots designed for manufacturing and industrial tasks, typically used in factories to automate processes such as welding, painting, assembly, and material handling.",
+  "current_low_level": "Robot Types"
+ },
+ {
+  "concept_name": "mobile robots",
+  "definition": "robots that are capable of moving around in their environment",
+  "current_low_level": "Robot Types"
+ },
+ {
+  "concept_name": "posterior probability",
+  "definition": "The probability of a hypothesis or model being true given the observed data, calculated using Bayes' theorem.",
+  "current_low_level": "Bayesian Statistics"
+ },
+ {
+  "concept_name": "correlation",
+  "definition": "A statistical measure that describes the degree to which two variables move in relation to each other.",
+  "current_low_level": "Correlation Analysis"
+ },
+ {
+  "concept_name": "correlation coefficient",
+  "definition": "A statistical measure that describes the strength and direction of a relationship between two variables. It ranges from -1 to 1, where 1 indicates a perfect positive correlation, -1 indicates a perfect negative correlation, and 0 indicates no correlation.",
+  "current_low_level": "Correlation Analysis"
+ },
+ {
+  "concept_name": "tensors",
+  "definition": "Multidimensional arrays with related operations used in machine learning models to compute gradients and perform optimized and parallelized calculations.",
+  "current_low_level": "Data Types"
+ },
+ {
+  "concept_name": "dispersion",
+  "definition": "The measure of the spread or variability of a set of values or data points. In the context of Solver agents, dispersion represents the breadth of their know-how, with a higher dispersion indicating a wider range of expertise.",
+  "current_low_level": "Descriptive statistics"
+ },
+ {
+  "concept_name": "kurtosis",
+  "definition": "Kurtosis is a statistical measure that describes the shape of a probability distribution. It quantifies how much a distribution differs from a normal distribution in terms of being more peaked or flat.",
+  "current_low_level": "Descriptive statistics"
+ },
+ {
+  "concept_name": "gaussian distribution",
+  "definition": "A probability distribution that is symmetric and bell-shaped, with the mean, median, and mode all equal. It is characterized by its probability density function, which follows the formula f(x) = (1/(ï¿½ï¿½ï¿½ï¿½ï¿½(2ï¿½ï¿½))) * exp(-((x-ï¿½ï¿½)^2)/(2ï¿½ï¿½^2)), where ï¿½ï¿½ is the mean and ï¿½",
+  "current_low_level": "Probability Theory"
+ },
+ {
+  "concept_name": "soil moisture",
+  "definition": "the amount of water present in the soil, usually expressed as a percentage of the soil's total weight",
+  "current_low_level": "Irrigation and Crop Water Management"
+ },
+ {
+  "concept_name": "drones",
+  "definition": "Unmanned aerial vehicles (UAVs) that are used for data collection and monitoring in precision agriculture, providing real-time information on crop conditions and development.",
+  "current_low_level": "Precision Agriculture and Smart Farming Systems"
+ },
+ {
+  "concept_name": "precision agriculture",
+  "definition": "Precision agriculture, also known as precision farming, is a farming management concept that uses technology to optimize crop yields and reduce waste by taking into account variability in factors such as soil, weather, and crop growth.",
+  "current_low_level": "Precision Agriculture and Smart Farming Systems"
+ },
+ {
+  "concept_name": "smart agriculture",
+  "definition": "The use of modern technologies such as AI, IoT, machine learning, and blockchain in agriculture to improve efficiency, productivity, and sustainability.",
+  "current_low_level": "Precision Agriculture and Smart Farming Systems"
+ },
+ {
+  "concept_name": "probes",
+  "definition": "Short single-stranded DNA or RNA molecules used to detect complementary sequences in a sample, often used in techniques such as microarrays or protein binding assays.",
+  "current_low_level": "Molecular biology"
+ },
+ {
+  "concept_name": "proteins",
+  "definition": "Large biomolecules, or macromolecules, consisting of one or more long chains of amino acid residues. Proteins perform a wide variety of functions in the body, including catalyzing metabolic reactions, replicating DNA, responding to stimuli, and transporting molecules from one location to another.",
+  "current_low_level": "Molecular biology"
+ },
+ {
+  "concept_name": "synthetic biology",
+  "definition": "A multidisciplinary field that involves the design and construction of new biological parts, devices, and systems, as well as the re-design of existing, natural biological systems for useful purposes.",
+  "current_low_level": "Molecular biology"
+ },
+ {
+  "concept_name": "decision support systems",
+  "definition": "Decision support systems are computer-based systems that support decision-making activities within an organization. These systems provide analytical tools, information, and models to help users make informed decisions.",
+  "current_low_level": "Business Analytics"
+ },
+ {
+  "concept_name": "information management",
+  "definition": "The process of collecting, storing, managing, and distributing information within an organization to support decision-making and ensure the organization's goals are met.",
+  "current_low_level": "Business Analytics"
+ },
+ {
+  "concept_name": "information systems",
+  "definition": "A system that collects, processes, stores, analyzes, and disseminates information for a specific purpose within an organization.",
+  "current_low_level": "Business Analytics"
+ }
+]
+
+==================== BATCH 6 / 13  (20 concepts) ====================
+[
+ {
+  "concept_name": "demand forecasting",
+  "definition": "The process of estimating the future demand for a product or service based on historical data and other relevant factors.",
+  "current_low_level": "Demand Management"
+ },
+ {
+  "concept_name": "human resource management",
+  "definition": "The process of managing an organization's workforce, including recruiting, hiring, training, and managing employees to achieve organizational goals.",
+  "current_low_level": "Human Capital Management"
+ },
+ {
+  "concept_name": "intellectual property",
+  "definition": "Refers to creations of the mind, such as inventions, literary and artistic works, designs, symbols, names, and images used in commerce, for which the owner has exclusive rights.",
+  "current_low_level": "Intellectual Property Strategy"
+ },
+ {
+  "concept_name": "process mining",
+  "definition": "Process mining is a technique used in business process management to analyze event data recorded in information systems to discover, monitor, and improve processes.",
+  "current_low_level": "Process Improvement"
+ },
+ {
+  "concept_name": "lean production",
+  "definition": "A production methodology focused on minimizing waste and maximizing efficiency in order to deliver high-quality products or services to customers.",
+  "current_low_level": "Supply Chain Operations"
+ },
+ {
+  "concept_name": "sodium",
+  "definition": "a chemical element with the symbol Na and atomic number 11, commonly found in salts and used in various industrial processes",
+  "current_low_level": "Chemical substances"
+ },
+ {
+  "concept_name": "cross-site scripting",
+  "definition": "Cross-site scripting (XSS) is a type of security vulnerability typically found in web applications. It allows attackers to inject malicious scripts into web pages viewed by other users.",
+  "current_low_level": "Attack Techniques"
+ },
+ {
+  "concept_name": "reconnaissance",
+  "definition": "In the context of cybersecurity, reconnaissance refers to the preliminary phase of a cyber attack where the attacker gathers information about the target network or system in order to identify vulnerabilities and plan the attack strategy.",
+  "current_low_level": "Attack Techniques"
+ },
+ {
+  "concept_name": "differential privacy",
+  "definition": "A concept in the field of data privacy that aims to provide privacy guarantees for individuals while allowing for accurate data analysis and model training.",
+  "current_low_level": "Cryptography"
+ },
+ {
+  "concept_name": "nsl-kdd",
+  "definition": "NSL-KDD is a dataset commonly used in the field of network intrusion detection for evaluating the performance of intrusion detection systems.",
+  "current_low_level": "Cybersecurity Datasets"
+ },
+ {
+  "concept_name": "access control",
+  "definition": "A security technique that regulates who or what can view or use resources in a computing environment.",
+  "current_low_level": "Cybersecurity Fundamentals"
+ },
+ {
+  "concept_name": "data privacy",
+  "definition": "Data privacy refers to the protection of sensitive information from unauthorized access, use, or disclosure. In the context of machine learning frameworks like SplitNN, data privacy involves ensuring that data is kept secure and private during the training process to prevent reconstruction attacks.",
+  "current_low_level": "Cybersecurity Fundamentals"
+ },
+ {
+  "concept_name": "information security",
+  "definition": "the practice of protecting information by mitigating information risks through managing people, processes, and technology",
+  "current_low_level": "Cybersecurity Fundamentals"
+ },
+ {
+  "concept_name": "network security",
+  "definition": "Network security refers to the protection of networks and their infrastructure from unauthorized access, misuse, or disruption. It involves implementing various measures such as firewalls, encryption, intrusion detection systems, and other security protocols to safeguard the confidentiality, integrity, and availability of network resources.",
+  "current_low_level": "Cybersecurity Fundamentals"
+ },
+ {
+  "concept_name": "trust management",
+  "definition": "The process of managing and establishing trust relationships between entities in a system, typically involving authentication, authorization, and access control mechanisms.",
+  "current_low_level": "Cybersecurity Fundamentals"
+ },
+ {
+  "concept_name": "meteorology",
+  "definition": "the scientific study of the atmosphere and its phenomena, especially in relation to weather and climate",
+  "current_low_level": "Atmospheric science"
+ },
+ {
+  "concept_name": "computer science education",
+  "definition": "The study and teaching of computer science principles, theories, and practices in educational settings, including schools, universities, and online platforms.",
+  "current_low_level": "Education disciplines"
+ },
+ {
+  "concept_name": "control theory",
+  "definition": "Control theory is a mathematical theory that deals with the control of dynamical systems in engineering and other disciplines. It provides a framework for designing controllers that can manipulate the behavior of systems to achieve desired outcomes.",
+  "current_low_level": "Control systems"
+ },
+ {
+  "concept_name": "approximate computing",
+  "definition": "Approximate computing is a computing paradigm where calculations are performed with reduced precision or accuracy in order to improve efficiency and reduce resource usage.",
+  "current_low_level": "Digital system design"
+ },
+ {
+  "concept_name": "microarchitecture",
+  "definition": "The organization and design of a computer system at the level of its individual hardware components, such as the processor, memory hierarchy, and input/output systems.",
+  "current_low_level": "Digital system design"
+ }
+]
+
+==================== BATCH 7 / 13  (20 concepts) ====================
+[
+ {
+  "concept_name": "microcontrollers",
+  "definition": "Small computers on a single integrated circuit chip that are designed to control specific functions in embedded systems.",
+  "current_low_level": "Digital system design"
+ },
+ {
+  "concept_name": "moore's law",
+  "definition": "Moore's Law is the observation made by Gordon Moore in 1965 that the number of transistors on a microchip doubles approximately every two years, leading to exponential growth in computing power.",
+  "current_low_level": "Digital system design"
+ },
+ {
+  "concept_name": "voltage",
+  "definition": "the difference in electric potential between two points, typically measured in volts",
+  "current_low_level": "Electrical quantities"
+ },
+ {
+  "concept_name": "analog integrated circuits",
+  "definition": "Analog integrated circuits are electronic circuits that process continuous signals, such as sound or light, in contrast to digital circuits that process discrete signals. These circuits are designed to perform specific functions using a combination of analog components integrated onto a single chip.",
+  "current_low_level": "Electronic components"
+ },
+ {
+  "concept_name": "capacitors",
+  "definition": "Capacitors are electronic components that store and release electrical energy in a circuit. They are commonly used to filter out noise, stabilize voltage, and store energy in electronic devices.",
+  "current_low_level": "Electronic components"
+ },
+ {
+  "concept_name": "integrated circuits",
+  "definition": "Integrated circuits are miniature electronic circuits that are made up of semiconductor devices such as transistors, diodes, and resistors, all interconnected on a single chip of semiconductor material.",
+  "current_low_level": "Electronic components"
+ },
+ {
+  "concept_name": "electrical engineering",
+  "definition": "A field of engineering that deals with the study and application of electricity, electronics, and electromagnetism in various systems and devices.",
+  "current_low_level": "Engineering disciplines"
+ },
+ {
+  "concept_name": "demand side management",
+  "definition": "Demand side management refers to the planning and implementation of strategies to control and optimize the consumption of electricity by end-users in order to improve the overall efficiency and reliability of the electricity grid.",
+  "current_low_level": "Demand-Side Flexibility"
+ },
+ {
+  "concept_name": "energy efficiency",
+  "definition": "Energy efficiency refers to the ratio of useful energy output to the total energy input in a system or process. It is a measure of how effectively energy is used to perform a specific task or achieve a desired outcome, with higher energy efficiency indicating less wasted energy.",
+  "current_low_level": "Energy Performance Metrics"
+ },
+ {
+  "concept_name": "batteries",
+  "definition": "Energy storage systems that store energy, typically from renewable sources like solar energy, for use during times of surplus or off-peak hours.",
+  "current_low_level": "Energy storage"
+ },
+ {
+  "concept_name": "renewable energy sources",
+  "definition": "Energy sources that are naturally replenished, such as sunlight, wind, rain, tides, waves, and geothermal heat, which are considered environmentally friendly and sustainable alternatives to fossil fuels.",
+  "current_low_level": "Renewable Power Systems"
+ },
+ {
+  "concept_name": "smart grids",
+  "definition": "Smart grids refer to modern electricity systems that use digital technology to control and optimize the flow of electricity. They integrate renewable energy sources, energy storage, and advanced communication and monitoring capabilities to improve efficiency, reliability, and sustainability of the grid.",
+  "current_low_level": "Smart Grid Technologies"
+ },
+ {
+  "concept_name": "cyber-physical systems",
+  "definition": "A technical concept that involves the integration of physical processes with networked computing systems to monitor and control physical processes in real-time.",
+  "current_low_level": "Automation & Control Systems"
+ },
+ {
+  "concept_name": "decentralized control",
+  "definition": "A control strategy in which decision-making and control tasks are distributed among multiple agents or entities within a system, allowing for more efficient and flexible operation.",
+  "current_low_level": "Automation & Control Systems"
+ },
+ {
+  "concept_name": "inverse design",
+  "definition": "A process in which a desired output is specified, and the goal is to find the input parameters or design that will result in that output.",
+  "current_low_level": "Engineering Design & Modeling"
+ },
+ {
+  "concept_name": "uncertainty",
+  "definition": "The lack of complete knowledge or information about a system, including unmodeled dynamics, external environmental noise, measurement errors, and parameter variations.",
+  "current_low_level": "Engineering Design & Modeling"
+ },
+ {
+  "concept_name": "industrial engineering",
+  "definition": "Industrial engineering is a branch of engineering that focuses on optimizing complex processes or systems by eliminating waste of time, money, materials, energy, and other resources. It involves the design, improvement, and implementation of integrated systems of people, money, knowledge, information, equipment, energy, and materials.",
+  "current_low_level": "Manufacturing & Industry 4.0"
+ },
+ {
+  "concept_name": "smart manufacturing",
+  "definition": "Smart manufacturing refers to the use of advanced technologies such as artificial intelligence, data analytics, and automation to improve efficiency, productivity, and flexibility in manufacturing processes. It involves the integration of digital technologies to create a connected and intelligent manufacturing environment.",
+  "current_low_level": "Manufacturing & Industry 4.0"
+ },
+ {
+  "concept_name": "predictive maintenance",
+  "definition": "Predictive maintenance is a proactive maintenance strategy that uses data analysis, machine learning, and sensor technologies to predict when equipment failure is likely to occur, allowing maintenance to be performed before the failure happens.",
+  "current_low_level": "Prognostics & Predictive Maintenance"
+ },
+ {
+  "concept_name": "defect detection",
+  "definition": "The process of identifying and locating defects or abnormalities in materials or structures within the construction sector.",
+  "current_low_level": "Structural Health Monitoring"
+ }
+]
+
+==================== BATCH 8 / 13  (20 concepts) ====================
+[
+ {
+  "concept_name": "fintech",
+  "definition": "Financial technology, a term used to describe innovative financial services and technologies that aim to improve and automate the delivery and use of financial services.",
+  "current_low_level": "Financial Technology"
+ },
+ {
+  "concept_name": "lithium batteries",
+  "definition": "rechargeable batteries that use lithium as one of their active components, commonly used in electronic devices and electric vehicles",
+  "current_low_level": "Functional Materials"
+ },
+ {
+  "concept_name": "solids",
+  "definition": "In the context of materials science, solids refer to substances that have a definite shape and volume, characterized by their strong intermolecular forces and fixed arrangement of atoms or molecules.",
+  "current_low_level": "Material Structure"
+ },
+ {
+  "concept_name": "surface roughness",
+  "definition": "Surface roughness refers to the deviations in the surface texture of a material, typically measured in terms of the height variations on the surface. It is an important factor in determining the quality and performance of machined components.",
+  "current_low_level": "Materials processing"
+ },
+ {
+  "concept_name": "quaternions",
+  "definition": "a number system that extends complex numbers to four dimensions, denoted as q = a + bi + cj + dk where a, b, c, d are real numbers and i, j, k are imaginary units, providing a richer representation for encoding candidate solutions and enabling the encoding of more complex relationships between different entities.",
+  "current_low_level": "Abstract algebra"
+ },
+ {
+  "concept_name": "topsis",
+  "definition": "Technique for Order Preference by Similarity to Ideal Solution, a multi-criteria decision-making method used to determine the best alternative from a set of options based on their distance to the ideal solution and the worst solution.",
+  "current_low_level": "Decision theory"
+ },
+ {
+  "concept_name": "linearity",
+  "definition": "The property of a mathematical relationship or function that can be represented as a straight line on a graph.",
+  "current_low_level": "Functions"
+ },
+ {
+  "concept_name": "entropy",
+  "definition": "Entropy measures the degree of uncertainty in data.",
+  "current_low_level": "Information theory"
+ },
+ {
+  "concept_name": "information entropy",
+  "definition": "a measure of the uncertainty or randomness in a set of data, often used in the context of information theory to quantify the amount of information contained in a message or signal",
+  "current_low_level": "Information theory"
+ },
+ {
+  "concept_name": "mutual information",
+  "definition": "Mutual information is a measure of the amount of information that one random variable contains about another random variable. It quantifies the amount of information obtained about one random variable through observing another random variable.",
+  "current_low_level": "Information theory"
+ },
+ {
+  "concept_name": "closed-form solutions",
+  "definition": "Solutions that can be expressed using a finite number of standard mathematical operations, such as addition, subtraction, multiplication, division, and exponentiation.",
+  "current_low_level": "Mathematical Foundations"
+ },
+ {
+  "concept_name": "euclidean distance",
+  "definition": "A measure of the straight-line distance between two points in Euclidean space.",
+  "current_low_level": "Metric Spaces"
+ },
+ {
+  "concept_name": "approximation methods",
+  "definition": "Techniques used to approximate solutions to complex problems in order to reduce computational burden, often sacrificing accuracy for efficiency.",
+  "current_low_level": "Numerical analysis"
+ },
+ {
+  "concept_name": "interpolation",
+  "definition": "a method of constructing new data points within the range of a discrete set of known data points",
+  "current_low_level": "Numerical analysis"
+ },
+ {
+  "concept_name": "convolution",
+  "definition": "a mathematical operation that combines two functions to produce a third function that expresses how one function modifies the other",
+  "current_low_level": "Transform Methods"
+ },
+ {
+  "concept_name": "hypertension",
+  "definition": "a medical condition characterized by high blood pressure in the arteries",
+  "current_low_level": "Cardiovascular Medicine"
+ },
+ {
+  "concept_name": "patient monitoring",
+  "definition": "The process of continuously observing and tracking a patient's vital signs, symptoms, and overall health status in order to provide timely and appropriate care and interventions.",
+  "current_low_level": "Digital Health"
+ },
+ {
+  "concept_name": "glucose sensors",
+  "definition": "Devices that measure the concentration of glucose in the blood or interstitial fluid, commonly used by individuals with diabetes to monitor their blood sugar levels.",
+  "current_low_level": "Endocrinology"
+ },
+ {
+  "concept_name": "hospitals",
+  "definition": "In this context, hospitals refer to healthcare facilities that provide medical treatment and care to patients. These hospitals are collaborating to build a machine learning model for predicting health risks.",
+  "current_low_level": "General Medicine"
+ },
+ {
+  "concept_name": "medical diagnosis",
+  "definition": "The process of determining which disease or condition explains a person's symptoms and signs.",
+  "current_low_level": "General Medicine"
+ }
+]
+
+==================== BATCH 9 / 13  (20 concepts) ====================
+[
+ {
+  "concept_name": "molecular imaging",
+  "definition": "A technique that visualizes biological processes at the molecular and cellular levels, often using specialized imaging equipment and contrast agents to highlight specific molecules or pathways in the body.",
+  "current_low_level": "Medical Imaging"
+ },
+ {
+  "concept_name": "optical imaging",
+  "definition": "A technique that uses light to create detailed images of structures within the body, often used in medical imaging to visualize tissues and organs.",
+  "current_low_level": "Medical Imaging"
+ },
+ {
+  "concept_name": "radiology",
+  "definition": "The branch of medicine that uses imaging techniques such as X-rays, CT scans, and MRI scans to diagnose and treat diseases and injuries.",
+  "current_low_level": "Medical Imaging"
+ },
+ {
+  "concept_name": "chronic kidney disease",
+  "definition": "A long-term condition where the kidneys are not functioning properly, leading to a gradual loss of kidney function over time.",
+  "current_low_level": "Nephrology"
+ },
+ {
+  "concept_name": "nephrology",
+  "definition": "the branch of medicine that deals with the physiology and diseases of the kidneys",
+  "current_low_level": "Nephrology"
+ },
+ {
+  "concept_name": "autism",
+  "definition": "Autism is a developmental disorder characterized by difficulties with social interaction and communication, and by restricted and repetitive behavior.",
+  "current_low_level": "Psychiatry"
+ },
+ {
+  "concept_name": "boundary conditions",
+  "definition": "The set of constraints or specifications that define the behavior of a system at its boundaries or limits, often used in the analysis of thermodynamic systems.",
+  "current_low_level": "Computational Simulation"
+ },
+ {
+  "concept_name": "density functional theory",
+  "definition": "a computational quantum mechanical modeling method used in physics and chemistry to investigate the electronic structure of many-body systems, such as atoms, molecules, and solids",
+  "current_low_level": "Computational Simulation"
+ },
+ {
+  "concept_name": "infrared imaging",
+  "definition": "A technique used for detecting and visualizing thermal patterns and temperature differences in objects by capturing and analyzing the infrared radiation emitted by them.",
+  "current_low_level": "Experimental Diagnostics"
+ },
+ {
+  "concept_name": "viscosity",
+  "definition": "A measure of a fluid's resistance to deformation or flow, typically described as its thickness or stickiness.",
+  "current_low_level": "Fluid dynamics"
+ },
+ {
+  "concept_name": "raman scattering",
+  "definition": "A phenomenon in which a small fraction of incident light is scattered inelastically by molecules, resulting in a shift in wavelength that is characteristic of the vibrational modes of the molecules.",
+  "current_low_level": "Optics"
+ },
+ {
+  "concept_name": "temperature",
+  "definition": "A measure of the average kinetic energy of the particles in a substance, typically measured in degrees Celsius or Fahrenheit.",
+  "current_low_level": "Thermal Physics"
+ },
+ {
+  "concept_name": "redundancy",
+  "definition": "In redundancy, critical components are duplicated within the system to ensure continued operation in case of failure.",
+  "current_low_level": "Reliability, Fault Tolerance & Resilience"
+ },
+ {
+  "concept_name": "resilience",
+  "definition": "the ability of a system to withstand and recover from disruptive events, such as cyber threats, and continue to function effectively",
+  "current_low_level": "Reliability, Fault Tolerance & Resilience"
+ },
+ {
+  "concept_name": "gaussian noise",
+  "definition": "A type of statistical noise characterized by a probability density function that follows a Gaussian distribution. It is often added to data or signals to simulate random variations or errors.",
+  "current_low_level": "Denoising"
+ },
+ {
+  "concept_name": "empirical mode decomposition",
+  "definition": "Empirical mode decomposition (EMD) is a data analysis method used for decomposing a signal into intrinsic mode functions (IMFs) based on the local characteristic time scales present in the data. It is commonly used in signal processing and time-series analysis.",
+  "current_low_level": "Feature extraction"
+ },
+ {
+  "concept_name": "filters",
+  "definition": "In the context of image processing, filters refer to mathematical operations applied to an image to enhance certain features or remove noise. These filters can be designed to detect edges, textures, or other patterns in the image.",
+  "current_low_level": "Image processing"
+ },
+ {
+  "concept_name": "signal processing",
+  "definition": "The manipulation and analysis of signals to extract useful information or patterns from data.",
+  "current_low_level": "Signal Processing Fundamentals"
+ },
+ {
+  "concept_name": "deconvolution",
+  "definition": "The process of separating a mixed signal into its individual components, such as separating multi-cellular spots into cell types in single-cell data analysis.",
+  "current_low_level": "Source separation"
+ },
+ {
+  "concept_name": "independent component analysis",
+  "definition": "A computational method for separating a multivariate signal into additive, independent components.",
+  "current_low_level": "Source separation"
+ }
+]
+
+==================== BATCH 10 / 13  (20 concepts) ====================
+[
+ {
+  "concept_name": "speech recognition",
+  "definition": "the ability of a machine or program to identify and understand spoken language",
+  "current_low_level": "Speech processing"
+ },
+ {
+  "concept_name": "informatics",
+  "definition": "the science of processing data for storage and retrieval",
+  "current_low_level": "Information science"
+ },
+ {
+  "concept_name": "cognitive science",
+  "definition": "The interdisciplinary study of the mind and intelligence, encompassing psychology, neuroscience, linguistics, philosophy, computer science, and other fields.",
+  "current_low_level": "Psychology"
+ },
+ {
+  "concept_name": "internet",
+  "definition": "A global network of interconnected computers that communicate using a standardized protocol known as TCP/IP (Transmission Control Protocol/Internet Protocol).",
+  "current_low_level": "Communication protocols"
+ },
+ {
+  "concept_name": "payloads",
+  "definition": "The actual data being transmitted within a network packet, excluding the headers and other metadata.",
+  "current_low_level": "Communication protocols"
+ },
+ {
+  "concept_name": "network function virtualization",
+  "definition": "Network Function Virtualization (NFV) is a network architecture concept that uses virtualization technologies to decouple network functions from proprietary hardware appliances, allowing network services to be deployed in software on general-purpose servers.",
+  "current_low_level": "Network architecture"
+ },
+ {
+  "concept_name": "telemetry",
+  "definition": "the process of collecting and transmitting data from remote or inaccessible sources for monitoring and analysis",
+  "current_low_level": "Network performance"
+ },
+ {
+  "concept_name": "power control",
+  "definition": "A technique used in wireless communication systems to adjust the transmission power of a user's device in order to optimize signal quality and coverage, typically implemented by adjusting the power levels of base stations or access points.",
+  "current_low_level": "Radio link performance"
+ },
+ {
+  "concept_name": "radio frequency",
+  "definition": "Electromagnetic waves with frequencies in the range of about 3 kHz to 300 GHz, used for various communication and radar applications.",
+  "current_low_level": "Radio link performance"
+ },
+ {
+  "concept_name": "connected vehicles",
+  "definition": "vehicles that are equipped with internet connectivity and are able to communicate with other devices or networks, enabling various functionalities such as remote monitoring, data sharing, and automation",
+  "current_low_level": "Vehicular communications"
+ },
+ {
+  "concept_name": "vehicular ad hoc networks",
+  "definition": "A type of mobile ad hoc network that allows vehicles to communicate with each other and with roadside infrastructure in order to improve road safety, traffic efficiency, and provide various services to drivers and passengers.",
+  "current_low_level": "Vehicular communications"
+ },
+ {
+  "concept_name": "base stations",
+  "definition": "A fixed communication point that connects wireless devices to a network edge, functioning as a DRL agent in the context of the model described.",
+  "current_low_level": "Wireless networking"
+ },
+ {
+  "concept_name": "bluetooth",
+  "definition": "A wireless technology standard for exchanging data over short distances, typically between mobile devices and accessories such as headphones, keyboards, and medical devices.",
+  "current_low_level": "Wireless networking"
+ },
+ {
+  "concept_name": "zigbee",
+  "definition": "A medium-range, low-cost and low-power wireless communication standard used for communication in various applications such as Wireless Sensor Networks and location tracking systems.",
+  "current_low_level": "Wireless networking"
+ },
+ {
+  "concept_name": "perturbation methods",
+  "definition": "A family of attribution methods used in the context of deep learning, involving perturbing input features to understand the impact on the output of a model.",
+  "current_low_level": "Perturbation Explanations"
+ },
+ {
+  "concept_name": "machine ethics",
+  "definition": "A field of study that focuses on designing artificial intelligent agents to make decisions according to a set of values and priorities that are defined as optimal, often involving ethical considerations and decision models.",
+  "current_low_level": "Ethical governance"
+ },
+ {
+  "concept_name": "open data",
+  "definition": "refers to data that is freely available to access, use, and share, without any restrictions or limitations",
+  "current_low_level": "Data access"
+ },
+ {
+  "concept_name": "data integrity",
+  "definition": "the assurance that data is accurate, consistent, and reliable throughout its lifecycle",
+  "current_low_level": "Data quality"
+ },
+ {
+  "concept_name": "data governance",
+  "definition": "Data governance is the overall management of the availability, usability, integrity, and security of data used in an organization.",
+  "current_low_level": "Governance framework"
+ },
+ {
+  "concept_name": "error analysis",
+  "definition": "Error analysis is a process of examining and understanding the mistakes made by a model in predicting certain elements, with the goal of identifying patterns and improving the model's performance.",
+  "current_low_level": "Evaluation Diagnostics"
+ }
+]
+
+==================== BATCH 11 / 13  (20 concepts) ====================
+[
+ {
+  "concept_name": "performance evaluation",
+  "definition": "The process of assessing the effectiveness and efficiency of a system or process through experiments or tests to determine its performance under different conditions or scenarios.",
+  "current_low_level": "Evaluation Methods and Protocols"
+ },
+ {
+  "concept_name": "data acquisition",
+  "definition": "The process of collecting data from various sources, such as devices or clinical records, for the purpose of analysis and research.",
+  "current_low_level": "Data collection"
+ },
+ {
+  "concept_name": "interviews",
+  "definition": "A method of gathering information through direct questioning of individuals, often used in research to collect qualitative data.",
+  "current_low_level": "Data collection"
+ },
+ {
+  "concept_name": "replicability",
+  "definition": "The ability of a study or experiment to be repeated by other researchers using the same methods and data to obtain similar results.",
+  "current_low_level": "Reproducibility"
+ },
+ {
+  "concept_name": "measurement units",
+  "definition": "In the context of this text, measurement units refer to specific metrics used to evaluate the performance of the proposed strategy, such as mean IoU, F1 score, Precision, and Recall.",
+  "current_low_level": "Aggregate Performance Metrics"
+ },
+ {
+  "concept_name": "performance metrics",
+  "definition": "Quantitative measures used to evaluate the performance of a model or system, typically including metrics such as accuracy, precision, recall, F1 score, etc.",
+  "current_low_level": "Aggregate Performance Metrics"
+ },
+ {
+  "concept_name": "accuracy",
+  "definition": "The degree to which a model's predictions or forecasts align with the actual outcomes or observations, indicating the model's effectiveness in capturing patterns and relationships in the data.",
+  "current_low_level": "Classification Metrics"
+ },
+ {
+  "concept_name": "matrices",
+  "definition": "A set of numbers or values arranged in rows and columns, used for evaluating the performance of models by calculating metrics such as accuracy, precision, recall, F1-Score, and AUC.",
+  "current_low_level": "Classification Metrics"
+ },
+ {
+  "concept_name": "sensitivity",
+  "definition": "In the context of machine learning and data analysis, sensitivity refers to the ability of a model to correctly identify positive instances out of all actual positive instances in a dataset. It is also known as true positive rate or recall.",
+  "current_low_level": "Classification Metrics"
+ },
+ {
+  "concept_name": "runtime",
+  "definition": "the period of time when a program is executing or running",
+  "current_low_level": "Efficiency Metrics"
+ },
+ {
+  "concept_name": "throughput",
+  "definition": "The amount of work or data processed in a given amount of time, often used to measure the performance of a system or process.",
+  "current_low_level": "Efficiency Metrics"
+ },
+ {
+  "concept_name": "sensitivity analysis",
+  "definition": "Sensitivity analysis is a technique used to determine how different values of an independent variable impact a particular dependent variable under a given set of assumptions. It helps in understanding the robustness and reliability of a model or system by analyzing the effects of changes in input parameters.",
+  "current_low_level": "Uncertainty Metrics"
+ },
+ {
+  "concept_name": "open access",
+  "definition": "The practice of providing unrestricted access to research articles, data, and other scholarly resources online, free of charge or other access barriers.",
+  "current_low_level": "Open Science"
+ },
+ {
+  "concept_name": "agent-based modeling",
+  "definition": "A computational modeling technique used to simulate the actions and interactions of autonomous agents in order to analyze the overall system behavior.",
+  "current_low_level": "Model Formulation"
+ },
+ {
+  "concept_name": "containers",
+  "definition": "A lightweight, standalone, executable package of software that includes everything needed to run a piece of software, including the code, runtime, system tools, libraries, and settings. Containers are isolated from each other and share the same operating system kernel, making them more lightweight and efficient compared to virtual machines.",
+  "current_low_level": "Containerization Platforms"
+ },
+ {
+  "concept_name": "data engineering",
+  "definition": "Data engineering is the process of designing, building, and managing data pipelines and infrastructure to collect, store, and process data effectively for analysis and decision-making.",
+  "current_low_level": "Data Operations Pipelines"
+ },
+ {
+  "concept_name": "data ingestion",
+  "definition": "The process of collecting, importing, and processing data for storage or analysis in a database or data warehouse.",
+  "current_low_level": "Data Operations Pipelines"
+ },
+ {
+  "concept_name": "production",
+  "definition": "The stage in a project lifecycle where models, data pipelines, and systems are deployed and used in real-world scenarios to generate value.",
+  "current_low_level": "Deployment Lifecycle"
+ },
+ {
+  "concept_name": "continuous integration",
+  "definition": "Continuous integration is the practice of frequently integrating code changes into a shared repository, allowing developers to detect and fix integration errors early in the development process.",
+  "current_low_level": "DevOps Automation"
+ },
+ {
+  "concept_name": "cloud computing",
+  "definition": "Cloud computing is the delivery of computing servicesï¿½ï¿½ï¿½including servers, storage, databases, networking, software, analytics, and intelligenceï¿½ï¿½ï¿½over the Internet ('the cloud') to offer faster innovation, flexible resources, and economi",
+  "current_low_level": "Infrastructure Platforms"
+ }
+]
+
+==================== BATCH 12 / 13  (20 concepts) ====================
+[
+ {
+  "concept_name": "edge computing",
+  "definition": "Edge computing is a distributed computing paradigm that brings computation and data storage closer to the location where it is needed, improving response times and saving bandwidth.",
+  "current_low_level": "Infrastructure Platforms"
+ },
+ {
+  "concept_name": "servers",
+  "definition": "Computers or software programs that provide functionality or services to other devices or programs on a network.",
+  "current_low_level": "Infrastructure Platforms"
+ },
+ {
+  "concept_name": "supercomputers",
+  "definition": "High-performance computing machines that are used for complex and intensive computational tasks, such as scientific simulations, modeling, and data analysis.",
+  "current_low_level": "Infrastructure Platforms"
+ },
+ {
+  "concept_name": "windows",
+  "definition": "A series of operating systems developed by Microsoft, commonly used on personal computers and servers.",
+  "current_low_level": "Infrastructure Platforms"
+ },
+ {
+  "concept_name": "checkpointing",
+  "definition": "a technique used in computing to periodically save the current state of a system or application in order to be able to restore it in case of failure or interruption",
+  "current_low_level": "Reliability engineering"
+ },
+ {
+  "concept_name": "kernel",
+  "definition": "The core component of a software engineering framework that provides premade building blocks for constructing methods using a specific language.",
+  "current_low_level": "Architectural Building Blocks"
+ },
+ {
+  "concept_name": "service computing",
+  "definition": "Service computing is a computing paradigm that focuses on the development and deployment of services, which are reusable software components that can be accessed over a network. It involves the design, implementation, and management of services to meet the needs of users and organizations.",
+  "current_low_level": "Architectural Styles"
+ },
+ {
+  "concept_name": "software architecture",
+  "definition": "Software architecture refers to the high-level structure of a software system, including the components, relationships, and principles governing its design and evolution.",
+  "current_low_level": "Architecture Governance"
+ },
+ {
+  "concept_name": "software product lines",
+  "definition": "A software engineering methodology for creating families of related software products efficiently by reusing common components and managing variability in requirements and design.",
+  "current_low_level": "Architecture Governance"
+ },
+ {
+  "concept_name": "petri nets",
+  "definition": "Petri Nets are a mathematical modeling language used for the description of distributed systems, characterized by the use of nodes representing states and transitions representing events that change the system from one state to another.",
+  "current_low_level": "Architecture Modeling"
+ },
+ {
+  "concept_name": "fault tolerance",
+  "definition": "the ability of a system to continue operating properly in the event of the failure of some of its components",
+  "current_low_level": "Architecture Quality Attributes"
+ },
+ {
+  "concept_name": "assembly",
+  "definition": "A low-level programming language that is closely related to machine code, where each statement corresponds to a single machine instruction.",
+  "current_low_level": "Programming constructs"
+ },
+ {
+  "concept_name": "python",
+  "definition": "A high-level programming language known for its readability and simplicity, commonly used in data science and machine learning applications.",
+  "current_low_level": "Programming constructs"
+ },
+ {
+  "concept_name": "open source software",
+  "definition": "Software that is released with a license that allows users to freely use, modify, and distribute the source code.",
+  "current_low_level": "Software development process"
+ },
+ {
+  "concept_name": "pipelines",
+  "definition": "A chain of processing elements arranged so that the output of each element is the input of the next, commonly used in software tools and workflow practices for automation and efficiency.",
+  "current_low_level": "Software development process"
+ },
+ {
+  "concept_name": "software maintenance",
+  "definition": "The process of modifying, updating, and managing software after it has been released, in order to ensure its continued functionality, reliability, and performance.",
+  "current_low_level": "Maintenance Work Management"
+ },
+ {
+  "concept_name": "fault location",
+  "definition": "The specific location within a piece of code where a bug or fault is present, typically identified as the buggy hunk in a method or program.",
+  "current_low_level": "Debugging"
+ },
+ {
+  "concept_name": "dictionaries",
+  "definition": "In the context of fuzzing, dictionaries refer to sets of input values or seeds that are used to guide the fuzzing process and improve code coverage.",
+  "current_low_level": "Fuzzing"
+ },
+ {
+  "concept_name": "software performance",
+  "definition": "The measure of how well a software application performs in terms of speed, efficiency, and resource usage.",
+  "current_low_level": "Performance Engineering"
+ },
+ {
+  "concept_name": "static analysis",
+  "definition": "A method of analyzing software code or binaries without executing them, typically by examining the source code or byte code to extract characteristic features.",
+  "current_low_level": "Program Analysis"
+ }
+]
+
+==================== BATCH 13 / 13  (11 concepts) ====================
+[
+ {
+  "concept_name": "reliability",
+  "definition": "the extent to which a software system can consistently perform its intended functions without failure",
+  "current_low_level": "Quality Requirements"
+ },
+ {
+  "concept_name": "safety",
+  "definition": "The extent to which the generated variants deemed valid would still be valid when tested against the whole test suite in the context of Genetic Improvement (GI) algorithms.",
+  "current_low_level": "Quality Requirements"
+ },
+ {
+  "concept_name": "scalability",
+  "definition": "The ability of a system to handle a growing amount of work or its potential to accommodate growth.",
+  "current_low_level": "Quality Requirements"
+ },
+ {
+  "concept_name": "software quality",
+  "definition": "The degree to which a software product meets specified requirements and customer expectations, as well as its overall reliability, efficiency, maintainability, and usability.",
+  "current_low_level": "Quality Requirements"
+ },
+ {
+  "concept_name": "software reliability",
+  "definition": "Software reliability refers to the probability of a software system performing its intended functions without failure under specified conditions for a specified period of time.",
+  "current_low_level": "Quality Requirements"
+ },
+ {
+  "concept_name": "combinatorial testing",
+  "definition": "A software testing technique that involves selecting test cases from a combination of input values to ensure that all possible interactions between input parameters are tested.",
+  "current_low_level": "Software testing"
+ },
+ {
+  "concept_name": "fault detection",
+  "definition": "The process of identifying and locating faults or defects in a system or software during testing or operation.",
+  "current_low_level": "Software testing"
+ },
+ {
+  "concept_name": "matlab",
+  "definition": "MATLAB is a high-performance language for technical computing that integrates computation, visualization, and programming in an easy-to-use environment.",
+  "current_low_level": "Data Science Tooling"
+ },
+ {
+  "concept_name": "r language",
+  "definition": "A programming language and software environment for statistical computing and graphics that is widely used for data analysis and machine learning.",
+  "current_low_level": "Data Science Tooling"
+ },
+ {
+  "concept_name": "browsers",
+  "definition": "Software applications used to access and view websites on the internet.",
+  "current_low_level": "Web Browsers"
+ },
+ {
+  "concept_name": "world wide web",
+  "definition": "The World Wide Web (WWW) is an information system where documents and other web resources are identified by Uniform Resource Locators (URLs), interlinked by hypertext links, and accessible via the Internet.",
+  "current_low_level": "Web Standards"
+ }
+]

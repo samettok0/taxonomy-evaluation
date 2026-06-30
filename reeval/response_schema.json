@@ -1,0 +1,49 @@
+{
+  "type": "object",
+  "properties": {
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "concept_name": {
+            "type": "string"
+          },
+          "issue": {
+            "type": "string",
+            "enum": [
+              "none",
+              "misclassified",
+              "ambiguous",
+              "overly_generic",
+              "irrelevant"
+            ]
+          },
+          "phantom_category": {
+            "type": "boolean"
+          },
+          "suggested_low_level": {
+            "type": "string"
+          },
+          "confidence": {
+            "type": "number"
+          },
+          "reasoning": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "concept_name",
+          "issue",
+          "phantom_category",
+          "suggested_low_level",
+          "confidence",
+          "reasoning"
+        ]
+      }
+    }
+  },
+  "required": [
+    "results"
+  ]
+}

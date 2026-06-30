@@ -18,6 +18,7 @@ Rows are ordered by global_index, matching the supervisor sheet order.
 """
 
 import os
+import re
 import csv
 import argparse
 from backend.db import get_db
@@ -27,6 +28,15 @@ OUT_DIR = os.path.dirname(os.path.abspath(__file__))
 # Default prompt ids in this project.
 GEMINI_PID = 3
 GPT_PID = 10
+
+
+def _safe_tag(name, prompt_id):
+    """Filename-safe tag from a prompt name (handles ·, parens, spaces)."""
+    tag = name or f"prompt{prompt_id}"
+    tag = tag.replace("·", "-")
+    tag = re.sub(r"[^A-Za-z0-9._-]+", "_", tag)  # collapse runs of other chars
+    tag = re.sub(r"_+", "_", tag).strip("_")
+    return tag[:60] or f"prompt{prompt_id}"
 
 
 def _fetch(conn, prompt_id):
@@ -107,7 +117,7 @@ def export_model(prompt_id):
     concepts = _concepts(conn)
     conn.close()
 
-    model_tag = (name_row["name"] if name_row else f"prompt{prompt_id}").replace(" ", "_")[:40]
+    model_tag = _safe_tag(name_row["name"] if name_row else None, prompt_id)
     out = os.path.join(OUT_DIR, f"sheet_paste_{model_tag}.tsv")
 
     # Column order matches the supervisor sheet's model-output block:
@@ -143,18 +153,46 @@ def export_model(prompt_id):
     print(f"   Last column 'Concept Name' is for alignment-checking; delete it after pasting.")
 
 
+def export_all(min_results=1):
+    """Write one sheet_paste_*.tsv per prompt that has >= min_results results."""
+    conn = get_db()
+    prompts = conn.execute(
+        """SELECT sp.id, sp.name, COUNT(e.id) AS n
+           FROM system_prompts sp
+           LEFT JOIN evaluation_results e ON e.system_prompt_id = sp.id
+           GROUP BY sp.id
+           HAVING n >= ?
+           ORDER BY sp.id""",
+        (min_results,),
+    ).fetchall()
+    conn.close()
+
+    if not prompts:
+        print(f"No prompts with >= {min_results} results.")
+        return
+    print(f"Exporting {len(prompts)} model run(s):\n")
+    for p in prompts:
+        export_model(p["id"])
+        print()
+
+
 def main():
     ap = argparse.ArgumentParser(description="Export evaluation results for Google Sheets.")
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("compare", help="Side-by-side Gemini vs GPT for supervisor decision.")
     m = sub.add_parser("model", help="One model's outputs in sheet column order.")
     m.add_argument("--prompt-id", type=int, required=True, help="3=Gemini, 10=gpt-4.1-mini.")
+    a = sub.add_parser("all", help="One sheet_paste_*.tsv per model run in the DB.")
+    a.add_argument("--min", type=int, default=1,
+                   help="Skip runs with fewer than this many results (default 1).")
     args = ap.parse_args()
 
     if args.cmd == "compare":
         export_compare()
     elif args.cmd == "model":
         export_model(args.prompt_id)
+    elif args.cmd == "all":
+        export_all(args.min)
 
 
 if __name__ == "__main__":
